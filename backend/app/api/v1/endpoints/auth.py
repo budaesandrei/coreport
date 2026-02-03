@@ -30,8 +30,8 @@ async def register(payload: RegisterIn, db: AsyncSession = Depends(get_db)) -> T
         db.add(project)
         await db.flush()
 
-    # Create user scoped to tenant
-    tenant_key = str(project.id)
+    # Create user scoped to tenant (tenant_id == project/workspace slug)
+    tenant_key = str(project.slug)
     res = await db.execute(
         select(AuthUser).where(AuthUser.tenant_id == tenant_key, AuthUser.email == payload.email)
     )
@@ -55,7 +55,7 @@ async def login(payload: LoginIn, db: AsyncSession = Depends(get_db)) -> TokenOu
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    tenant_key = str(project.id)
+    tenant_key = str(project.slug)
     res = await db.execute(
         select(AuthUser).where(AuthUser.tenant_id == tenant_key, AuthUser.email == payload.email)
     )

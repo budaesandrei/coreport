@@ -24,6 +24,14 @@ make seed
 - Backend Swagger: <http://localhost:8000/docs>
 - Frontend: <http://localhost:3000>
 
+## Local dev auth (seeded)
+
+After `make migrate && make seed`, you can log in with:
+
+- **Email:** `alice@example.com`
+- **Password:** `dev-password`
+- **Workspace:** `Default Workspace` (slug: `default`)
+
 ## Multi-tenancy headers
 
 Every request is scoped by headers:
@@ -31,7 +39,7 @@ Every request is scoped by headers:
 - `X-Tenant-Id` (default: `default`)
 - `X-User-Name` (default: `System`)
 
-The frontend has a Tenant/User switcher in the topbar and sends these headers to the API.
+If you're calling the API directly (curl/Postman), include `X-Tenant-Id: default` to access the seeded data.
 
 ## OpenAI mapping
 
