@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.context import get_current_tenant_id
+from app.core.context import get_current_workspace_id
 from app.db.session import get_db
 from app.models.entity import Entity
 from app.schemas.entity import EntityCreate, EntityOut
@@ -14,8 +14,8 @@ router = APIRouter()
 
 @router.get("/", response_model=list[EntityOut])
 async def list_entities(db: AsyncSession = Depends(get_db)) -> list[Entity]:
-    tenant_id = get_current_tenant_id()
-    res = await db.execute(select(Entity).where(Entity.tenant_id == tenant_id).order_by(Entity.id))
+    workspace_id = get_current_workspace_id()
+    res = await db.execute(select(Entity).where(Entity.workspace_id == workspace_id).order_by(Entity.id))
     return list(res.scalars().all())
 
 
@@ -24,7 +24,6 @@ async def create_entity(payload: EntityCreate, db: AsyncSession = Depends(get_db
     item = Entity(
         name=payload.name,
         entity_type=payload.entity_type,
-        org_id=payload.org_id,
         external_id=payload.external_id,
     )
     db.add(item)

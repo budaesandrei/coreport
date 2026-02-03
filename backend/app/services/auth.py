@@ -18,13 +18,13 @@ def verify_password(password: str, password_hash: str) -> bool:
     return pwd_context.verify(password, password_hash)
 
 
-def create_access_token(*, project_id: int, tenant_id: str, email: str) -> str:
+def create_access_token(*, workspace_id: int, workspace_slug: str, email: str) -> str:
     now = datetime.now(timezone.utc)
     exp = now + timedelta(minutes=settings.JWT_EXPIRES_MINUTES)
     payload = {
         "sub": email,
-        "project_id": project_id,
-        "tenant_id": tenant_id,
+        "workspace_id": workspace_id,
+        "workspace_slug": workspace_slug,
         "iat": int(now.timestamp()),
         "exp": exp,
     }
@@ -32,4 +32,8 @@ def create_access_token(*, project_id: int, tenant_id: str, email: str) -> str:
 
 
 def decode_access_token(token: str) -> dict:
-    return jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+    try:
+        return jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+    except Exception:
+        # Treat malformed/expired tokens as unauthenticated
+        raise ValueError("Invalid token")

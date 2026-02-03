@@ -5,20 +5,12 @@ import ConfirmAccount from "@pages/ConfirmAccount";
 import Login from "@pages/Login";
 import AuthGate from "@components/auth/AuthGate";
 import MainLayout from "@layout/MainLayout";
-import Users from "@pages/Admin/Users"; 
+import Users from "@pages/Admin/Users";
 import ReportTypes from "@pages/Admin/ReportTypes";
 import ActivityContainer from "@pages/Overview/Activity";
 import Providers from "@pages/Setup/Providers";
 import EntityTypes from "@pages/Setup/EntityTypes";
-
-export const protectedRoutes = [
-  { path: "/", element: <Home /> },
-  { path: "/activity", element: <ActivityContainer /> },
-  { path: "/admin/users", element: <Users /> },
-  { path: "/admin/report-types", element: <ReportTypes /> },
-  { path: "/setup/providers", element: <Providers /> },
-  { path: "/setup/entity-types", element: <EntityTypes /> },
-]
+import PlaceholderPage from "@pages/PlaceholderPage";
 
 const AppRouter = () => {
   return (
@@ -28,18 +20,38 @@ const AppRouter = () => {
       <Route path="/confirm-account" element={<ConfirmAccount />} />
       <Route path="/login" element={<Login />} />
 
-      {/* Protected routes */}
-      {protectedRoutes.map(({ path, element }) => (
-        <Route
-          key={path}
-          path={path}
-          element={
-            <AuthGate>
-              <MainLayout>{element}</MainLayout>
-            </AuthGate>
-          }
-        />
-      ))}
+      {/* Protected app shell (keeps Topbar/Sidebar mounted) */}
+      <Route
+        element={
+          <AuthGate>
+            <MainLayout />
+          </AuthGate>
+        }
+      >
+        <Route path="/" element={<Home />} />
+        <Route path="/workspace" element={<PlaceholderPage title="Workspace" />} />
+        <Route path="/activity" element={<ActivityContainer />} />
+        <Route path="/field-mapping" element={<PlaceholderPage title="Field Mapping" />} />
+        <Route path="/submissions" element={<PlaceholderPage title="Submissions" />} />
+
+        <Route path="/admin/users" element={<Users />} />
+        <Route path="/admin/report-types" element={<ReportTypes />} />
+        <Route path="/admin/groups" element={<PlaceholderPage title="User Groups" />} />
+        <Route path="/admin/permissions" element={<PlaceholderPage title="Permissions" />} />
+        <Route path="/admin/subscription" element={<PlaceholderPage title="Subscription" />} />
+        <Route path="/admin/integrations" element={<PlaceholderPage title="Integrations" />} />
+
+        <Route path="/setup/providers" element={<Providers />} />
+        <Route path="/setup/data-packets" element={<PlaceholderPage title="Data Packets" />} />
+        <Route path="/setup/report-types" element={<ReportTypes />} />
+        <Route path="/setup/entity-types" element={<EntityTypes />} />
+        <Route path="/setup/entities" element={<PlaceholderPage title="Entities" />} />
+        <Route path="/setup/schedules" element={<PlaceholderPage title="Schedules" />} />
+        <Route path="/setup/value-mapping-sets" element={<PlaceholderPage title="Value Mapping Sets" />} />
+        <Route path="/setup/validation-rules" element={<PlaceholderPage title="Validation Rules" />} />
+
+        <Route path="*" element={<PlaceholderPage title="Not Found" />} />
+      </Route>
     </Routes>
   );
 };

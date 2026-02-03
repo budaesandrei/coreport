@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.context import get_current_tenant_id
+from app.core.context import get_current_workspace_id
 from app.db.session import get_db
 from app.models.upload_job import UploadJob
 from app.schemas.upload import ProposedMapping, UploadJobOut
@@ -22,8 +22,8 @@ MAX_BYTES = 10 * 1024 * 1024
 
 @router.get("/", response_model=list[UploadJobOut])
 async def list_uploads(db: AsyncSession = Depends(get_db)) -> list[UploadJob]:
-    tenant_id = get_current_tenant_id()
-    res = await db.execute(select(UploadJob).where(UploadJob.tenant_id == tenant_id).order_by(UploadJob.id))
+    workspace_id = get_current_workspace_id()
+    res = await db.execute(select(UploadJob).where(UploadJob.workspace_id == workspace_id).order_by(UploadJob.id))
     return list(res.scalars().all())
 
 
@@ -73,9 +73,9 @@ async def create_upload_from_url(url: str, db: AsyncSession = Depends(get_db)) -
 
 @router.post("/{upload_id}/propose-mapping", response_model=ProposedMapping)
 async def propose_mapping_for_upload(upload_id: int, db: AsyncSession = Depends(get_db)) -> ProposedMapping:
-    tenant_id = get_current_tenant_id()
+    workspace_id = get_current_workspace_id()
     res = await db.execute(
-        select(UploadJob).where(UploadJob.tenant_id == tenant_id, UploadJob.id == upload_id)
+        select(UploadJob).where(UploadJob.workspace_id == workspace_id, UploadJob.id == upload_id)
     )
     job = res.scalar_one_or_none()
     if not job:
@@ -87,7 +87,7 @@ async def propose_mapping_for_upload(upload_id: int, db: AsyncSession = Depends(
         "fields": [
             {"key": "property_id"},
             {"key": "unit_id"},
-            {"key": "tenant_name"},
+            {"key": "workspace_name"},
             {"key": "lease_start"},
             {"key": "lease_end"},
             {"key": "rent_amount_monthly"},

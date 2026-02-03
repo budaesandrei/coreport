@@ -9,7 +9,6 @@ from app.db.mixin import BaseMixin
 
 class MappingCache(Base, BaseMixin):
     user_id: Mapped[int] = mapped_column(index=True)
-    org_id: Mapped[int] = mapped_column(index=True)
     report_type_id: Mapped[int] = mapped_column(index=True)
     file_fingerprint: Mapped[str] = mapped_column(String(128), nullable=False, index=True)
     mapping_spec: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)

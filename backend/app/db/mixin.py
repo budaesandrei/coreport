@@ -5,7 +5,7 @@ from datetime import datetime
 from sqlalchemy import DateTime, String, func
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column
 
-from app.core.context import get_current_tenant_id, get_current_user_name
+from app.core.context import get_current_user_name, get_current_workspace_id
 from app.utils.naming import pascal_case_to_snake_case_plural
 
 
@@ -18,10 +18,10 @@ class BaseMixin:
     def id(cls) -> Mapped[int]:  # noqa: N805
         return mapped_column(primary_key=True, autoincrement=True, sort_order=-1)
 
-    tenant_id: Mapped[str] = mapped_column(
+    workspace_id: Mapped[str] = mapped_column(
         String(64),
         nullable=False,
-        default=get_current_tenant_id,
+        default=get_current_workspace_id,
         index=True,
         sort_order=500,
     )

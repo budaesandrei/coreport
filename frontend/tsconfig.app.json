@@ -28,7 +28,8 @@
     /* Paths */
     "baseUrl": ".",
     "paths": {
-      "@api": ["./src/api"],
+      "@api": ["./src/api/index.ts"],
+      "@api/*": ["./src/api/*"],
       "@assets/*": ["./src/assets/*"],
       "@components/*": ["./src/components/*"],
       "@config/*": ["./src/config/*"],
@@ -41,6 +42,7 @@
       "@router/*": ["./src/router/*"],
       "@theme/*": ["./src/theme/*"],
       "@types": ["./src/types"],
+      "@types/*": ["./src/types/*"],
       "@utils/*": ["./src/utils/*"],
     },
   },

@@ -11,7 +11,7 @@ class ORMBase(BaseModel):
 
 class ItemBase(ORMBase):
     id: int
-    tenant_id: str
+    workspace_id: str
     insert_by: str
     insert_dt: datetime
     update_by: str

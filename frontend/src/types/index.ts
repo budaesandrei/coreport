@@ -1,6 +1,6 @@
 export * from './enums';
 export * from './invitations';
-export * from './projects';
+export * from './workspaces';
 export * from './providers';
 export * from './projectUsers';
 export * from './entityTypes';

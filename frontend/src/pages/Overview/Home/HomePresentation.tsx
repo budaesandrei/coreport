@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import Icon from '@mui/material/Icon';
-import { useProjectInfo } from '@hooks/useProjectInfo'; // adjust import as needed
-import { MuiMarkdown } from 'mui-markdown';
-import { Highlight, themes } from 'prism-react-renderer';
+import { useWorkspaceInfo } from '@hooks/useWorkspaceInfo';
 
 type HomePresentationProps = {
   userName: string;
-  projectName: string;
+  workspaceName: string;
 };
 
-const HomePresentation: React.FC<HomePresentationProps> = ({ userName, projectName }) => {
+const HomePresentation: React.FC<HomePresentationProps> = ({ userName, workspaceName }) => {
   const [
-    { data: projectData, loading: projectLoading, error: projectError },
-    resolveProject
-  ] = useProjectInfo();
+    { data: workspaceData, loading: workspaceLoading, error: workspaceError },
+    resolveWorkspace
+  ] = useWorkspaceInfo();
 
   const [resolved, setResolved] = useState(false);
 
   useEffect(() => {
-    if (!resolved && projectName) {
-      resolveProject({ name: projectName });
+    if (!resolved && workspaceName) {
+      resolveWorkspace({ name: workspaceName });
       setResolved(true);
     }
-  }, [projectName, resolved, resolveProject]);
+  }, [workspaceName, resolved, resolveWorkspace]);
 
   return (
     <Box p={4}>
@@ -31,7 +29,7 @@ const HomePresentation: React.FC<HomePresentationProps> = ({ userName, projectNa
         Welcome, {userName}
       </Typography>
       <Typography variant="subtitle1">
-        You're viewing: <strong>{projectName}</strong>
+        You're viewing: <strong>{workspaceName}</strong>
       </Typography>
       <Box mt={3}>
         <Typography color="text.secondary">
@@ -39,17 +37,17 @@ const HomePresentation: React.FC<HomePresentationProps> = ({ userName, projectNa
           This is your project overview. Use the sidebar to manage reports, users, and settings.
         </Typography>
 
-        {projectLoading && <Typography>Loading project info...</Typography>}
-        {projectError && <Typography color="error">Error: {projectError}</Typography>}
-        {projectData && (
+        {workspaceLoading && <Typography>Loading workspace info...</Typography>}
+        {workspaceError && <Typography color="error">Error: {workspaceError}</Typography>}
+        {workspaceData && (
           <Typography variant="body2" sx={{ mt: 2 }}>
-            Project ID: <strong>{projectData.id}</strong><br />
-            (Check your network tab for the `X-Project-Id` header!)
+            Workspace ID: <strong>{workspaceData.id}</strong>
+            <br />
+            Workspace Slug: <strong>{workspaceData.slug}</strong>
+            <br />
+            (Requests include the `X-Workspace-Id` header.)
           </Typography>
         )}
-        <MuiMarkdown Highlight={Highlight} themes={themes} prismTheme={themes.gruvboxMaterialDark}>
-          {`~~~python\ndef hello_world():\n    print("Hello, World!")\nhello_world()\n~~~`}
-        </MuiMarkdown>
       </Box>
     </Box>
   );

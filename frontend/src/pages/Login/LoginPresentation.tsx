@@ -22,7 +22,7 @@ import {
 } from './props';
 import logoDark from '@assets/images/logo_dark.webp';
 import logoWhite from '@assets/images/logo_white.webp';
-import { useProjectInfo } from '@hooks/useProjectInfo';
+import { useWorkspaceInfo } from '@hooks/useWorkspaceInfo';
 
 type Step = 'project' | 'auth';
 type AuthMode = 'login' | 'register';
@@ -39,30 +39,30 @@ export default function LoginPresentation({
   const [isDarkMode] = useState(theme.palette.mode === 'dark');
   const [step, setStep] = useState<Step>('project');
   const [authMode, setAuthMode] = useState<AuthMode>('login');
-  const [projectName, setProjectName] = useState('');
-  const [projectError, setProjectError] = useState('');
+  const [workspaceName, setWorkspaceName] = useState('');
+  const [workspaceError, setWorkspaceError] = useState('');
   const [
     { data: projectData, loading: projectLoading, error: hookProjectError },
     resolveProject
-  ] = useProjectInfo();
+  ] = useWorkspaceInfo();
 
   useEffect(() => {
     if (projectData) {
-      localStorage.setItem('project_id', projectData.id.toString());
+      localStorage.setItem('workspace_id', projectData.slug);
+      localStorage.setItem('workspace_name', projectData.name);
       setStep('auth');
     }
   }, [projectData]);
 
   const handleProjectContinue = async () => {
-    const trimmed = projectName.trim();
+    const trimmed = workspaceName.trim();
     if (!trimmed) {
-      setProjectError('Please enter your workspace name');
+      setWorkspaceError('Please enter your workspace name');
       return;
     }
 
-    setProjectError('');
-    // Keep the exact workspace name used in step 1 so Create Account can use it.
-    localStorage.setItem('project_name', trimmed);
+    setWorkspaceError('');
+    localStorage.setItem('workspace_name', trimmed);
     await resolveProject({ name: trimmed });
   };
 
@@ -71,7 +71,7 @@ export default function LoginPresentation({
       onSignIn(data);
       return;
     }
-    onRegister(data, projectName);
+    onRegister(data, workspaceName);
   };
 
   return (
@@ -96,14 +96,14 @@ export default function LoginPresentation({
           {/* Step 1: Workspace */}
           <Slide direction="right" in={step === 'project'} mountOnEnter unmountOnExit>
             <form style={{ width: '100%' }} onSubmit={(e) => { e.preventDefault(); handleProjectContinue(); }}>
-              <FormControl fullWidth error={!!(projectError || hookProjectError)}>
+              <FormControl fullWidth error={!!(workspaceError || hookProjectError)}>
                 <StyledTextField
                   label="Workspace"
-                  value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
+                  value={workspaceName}
+                  onChange={(e) => setWorkspaceName(e.target.value)}
                   disabled={loading || projectLoading}
                 />
-                {(projectError || hookProjectError) && <FormHelperText>{projectError || hookProjectError}</FormHelperText>}
+                {(workspaceError || hookProjectError) && <FormHelperText>{workspaceError || hookProjectError}</FormHelperText>}
               </FormControl>
 
               <StyledButton

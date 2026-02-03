@@ -9,13 +9,13 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem('coreport.token');
-  const storedProjectId = localStorage.getItem('project_id');
+  const storedWorkspaceId = localStorage.getItem('workspace_id');
 
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`;
   }
-  if (storedProjectId) {
-    config.headers['X-Project-Id'] = storedProjectId;
+  if (storedWorkspaceId) {
+    config.headers['X-Workspace-Id'] = storedWorkspaceId;
   }
 
   return config;

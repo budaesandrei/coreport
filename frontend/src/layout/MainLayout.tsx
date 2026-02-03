@@ -1,4 +1,5 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import { Box, ThemeProvider } from '@mui/material';
 import Sidebar from '@layout/Sidebar';
 import Topbar from '@layout/Topbar';
@@ -8,7 +9,7 @@ import { darkTheme } from '@theme/theme';
 const TOPBAR_HEIGHT = 50;
 const SIDEBAR_WIDTH = 240;
 
-const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   return (
     <Box
       sx={{
@@ -29,7 +30,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </ThemeProvider>
         {/* Content uses the main theme from ThemeContext */}
         <Content topbarHeight={TOPBAR_HEIGHT}>
-          {children}
+          {children ?? <Outlet />}
         </Content>
       </Box>
     </Box>
