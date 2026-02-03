@@ -3,7 +3,8 @@ import CompleteRegistrationPresentation from './CompleteRegistrationPresentation
 import { useCompleteRegistration } from '@hooks/useCompleteRegistration';
 import { useNavigate } from 'react-router-dom';
 import { Snackbar, Alert } from '@mui/material';
-import { signUp, signInWithRedirect } from 'aws-amplify/auth';
+import apiClient from '@api/client';
+import { patchAcceptInvitationByToken } from '@api';
 
 const CompleteRegistrationContainer: React.FC = () => {
   const navigate = useNavigate();
@@ -25,20 +26,28 @@ const CompleteRegistrationContainer: React.FC = () => {
 
     try {
       setLoading(true);
-      await signUp({
-        username: data.email,
+      const registerResp = await apiClient.post('/auth/register', {
+        project_name: data.project.name,
+        email: data.email,
         password: password,
       });
 
-      localStorage.setItem("invite_token", token!);
+      if (token) {
+        await patchAcceptInvitationByToken(token);
+      }
+
+      localStorage.setItem('coreport.token', registerResp.data.access_token);
+      if (token) {
+        localStorage.removeItem('invite_token');
+      }
 
       setSnackbar({
         open: true,
-        message: 'Check your email to confirm your account',
+        message: 'Registration complete',
         severity: 'success',
       });
 
-      navigate('/confirm-account', { state: { email: data.email } });
+      navigate('/');
     } catch (err: any) {
       setSnackbar({
         open: true,
@@ -51,33 +60,19 @@ const CompleteRegistrationContainer: React.FC = () => {
   };
 
   const handleGoogleSignIn = async () => {
-    try {
-      setLoading(true);
-      if (token) localStorage.setItem("invite_token", token);
-      await signInWithRedirect({ provider: 'Google' });
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: 'Failed to sign in with Google',
-        severity: 'error'
-      });
-      setLoading(false);
-    }
+    setSnackbar({
+      open: true,
+      message: 'Google sign-in is not enabled in local auth mode',
+      severity: 'error'
+    });
   };
 
   const handleMicrosoftSignIn = async () => {
-    try {
-      setLoading(true);
-      if (token) localStorage.setItem("invite_token", token);
-      await signInWithRedirect({ provider: { custom: 'LoginWithMicrosoft' } });
-    } catch (error) {
-      setSnackbar({
-        open: true,
-        message: 'Failed to sign in with Microsoft',
-        severity: 'error'
-      });
-      setLoading(false);
-    }
+    setSnackbar({
+      open: true,
+      message: 'Microsoft sign-in is not enabled in local auth mode',
+      severity: 'error'
+    });
   };
 
   return (

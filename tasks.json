@@ -19,9 +19,11 @@
       "Implement docker-compose services needed (auth provider + email capture or fake SNS).",
       "Implement backend endpoints for signup/login/invite acceptance (or adapt existing invitation flow).",
       "Implement frontend login page/button and session persistence.",
-      "Verify end-to-end: register/login works in browser, and API calls are authenticated."
+      "Verify end-to-end: register/login works in browser, and API calls are authenticated.",
+      "Align /api/v1/auth register/login to use Project records and AuthUser tenant_id derived from project id.",
+      "Update Complete Registration flow to call local /auth/register, accept invitation token, and disable social sign-in buttons."
     ],
-    "passes": false
+    "passes": true
   },
   {
     "feature": "Portal: workspace creation + tenant switching + seeded templates",
