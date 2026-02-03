@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { Slide, useTheme } from '@mui/material';
+import { Slide, useTheme, Button, Stack, Typography } from '@mui/material';
 import { FormControl, FormHelperText } from '@mui/material';
-import GoogleIcon from '@mui/icons-material/Google';
-import MicrosoftIcon from '@mui/icons-material/Microsoft';
 import {
   LoginContainer,
   LoginPaper,
@@ -14,25 +12,24 @@ import {
   Tagline,
   StyledTextField,
   StyledButton,
-  Divider,
   FormContainer,
 } from './styles';
-import { 
-  LoginPresentationProps, 
-  LoginFormData, 
+import {
+  LoginPresentationProps,
+  LoginFormData,
   formDefaultValues,
-  formValidationRules 
+  formValidationRules
 } from './props';
 import logoDark from '@assets/images/logo_dark.webp';
 import logoWhite from '@assets/images/logo_white.webp';
 import { useProjectInfo } from '@hooks/useProjectInfo';
 
-type Step = 'project' | 'login';
+type Step = 'project' | 'auth';
+type AuthMode = 'login' | 'register';
 
 export default function LoginPresentation({
   onSignIn,
-  onGoogleSignIn,
-  onMicrosoftSignIn,
+  onRegister,
   loading,
 }: LoginPresentationProps) {
   const theme = useTheme();
@@ -41,6 +38,7 @@ export default function LoginPresentation({
   });
   const [isDarkMode] = useState(theme.palette.mode === 'dark');
   const [step, setStep] = useState<Step>('project');
+  const [authMode, setAuthMode] = useState<AuthMode>('login');
   const [projectName, setProjectName] = useState('');
   const [projectError, setProjectError] = useState('');
   const [
@@ -51,22 +49,29 @@ export default function LoginPresentation({
   useEffect(() => {
     if (projectData) {
       localStorage.setItem('project_id', projectData.id.toString());
-      setStep('login');
+      setStep('auth');
     }
   }, [projectData]);
 
   const handleProjectContinue = async () => {
     const trimmed = projectName.trim();
     if (!trimmed) {
-      setProjectError('Please enter your team/project name');
+      setProjectError('Please enter your workspace name');
       return;
     }
+
     setProjectError('');
+    // Keep the exact workspace name used in step 1 so Create Account can use it.
+    localStorage.setItem('project_name', trimmed);
     await resolveProject({ name: trimmed });
   };
 
   const onSubmit = (data: LoginFormData) => {
-    onSignIn(data);
+    if (authMode === 'login') {
+      onSignIn(data);
+      return;
+    }
+    onRegister(data, projectName);
   };
 
   return (
@@ -88,12 +93,12 @@ export default function LoginPresentation({
         </HeaderContainer>
 
         <FormContainer>
-          {/* Step 1: Project Name */}
+          {/* Step 1: Workspace */}
           <Slide direction="right" in={step === 'project'} mountOnEnter unmountOnExit>
             <form style={{ width: '100%' }} onSubmit={(e) => { e.preventDefault(); handleProjectContinue(); }}>
               <FormControl fullWidth error={!!(projectError || hookProjectError)}>
                 <StyledTextField
-                  label="Project Name"
+                  label="Workspace"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
                   disabled={loading || projectLoading}
@@ -111,10 +116,24 @@ export default function LoginPresentation({
               </StyledButton>
             </form>
           </Slide>
-          
-          {/* Step 2: Login */}
-          <Slide direction="left" in={step === 'login'} mountOnEnter unmountOnExit>
+
+          {/* Step 2: Auth */}
+          <Slide direction="left" in={step === 'auth'} mountOnEnter unmountOnExit>
             <div>
+              <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                  {authMode === 'login' ? 'Sign in' : 'Create account'}
+                </Typography>
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={() => setStep('project')}
+                  disabled={loading}
+                >
+                  Change workspace
+                </Button>
+              </Stack>
+
               <form onSubmit={handleSubmit(onSubmit)} style={{ width: '100%' }}>
                 <FormControl fullWidth error={!!errors.email}>
                   <StyledTextField
@@ -126,52 +145,41 @@ export default function LoginPresentation({
                   />
                   {errors.email && <FormHelperText>{errors.email.message}</FormHelperText>}
                 </FormControl>
-                
+
                 <FormControl fullWidth error={!!errors.password} sx={{ mt: 2 }}>
                   <StyledTextField
                     {...register('password', formValidationRules.password)}
                     label="Password"
                     type="password"
                     disabled={loading}
-                    autoComplete="current-password"
+                    autoComplete={authMode === 'login' ? 'current-password' : 'new-password'}
                   />
                   {errors.password && <FormHelperText>{errors.password.message}</FormHelperText>}
                 </FormControl>
-                
+
                 <StyledButton
                   type="submit"
                   variant="contained"
                   disabled={loading}
                   sx={{ mt: 3 }}
                 >
-                  Sign In
+                  {authMode === 'login' ? 'Sign In' : 'Create Account'}
                 </StyledButton>
               </form>
 
-              <Divider>or</Divider>
-
-              <StyledButton
-                variant="outlined"
-                onClick={onGoogleSignIn}
+              <Button
+                variant="text"
+                size="small"
+                onClick={() => setAuthMode((m) => (m === 'login' ? 'register' : 'login'))}
                 disabled={loading}
-                startIcon={<GoogleIcon />}
+                sx={{ mt: 1 }}
               >
-                Sign in with Google
-              </StyledButton>
-
-              <StyledButton
-                variant="outlined"
-                onClick={onMicrosoftSignIn}
-                disabled={loading}
-                startIcon={<MicrosoftIcon />}
-                sx={{ mt: 2 }}
-              >
-                Sign in with Microsoft
-              </StyledButton>
+                {authMode === 'login' ? "Don't have an account? Create one" : 'Already have an account? Sign in'}
+              </Button>
             </div>
           </Slide>
         </FormContainer>
       </LoginPaper>
     </LoginContainer>
   );
-} 
+}

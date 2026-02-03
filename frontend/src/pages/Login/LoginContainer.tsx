@@ -25,7 +25,7 @@ export default function LoginContainer() {
       if (!projectId) {
         setSnackbar({
           open: true,
-          message: 'Please select a project first',
+          message: 'Please select a workspace first',
           severity: 'error'
         });
         return;
@@ -50,28 +50,43 @@ export default function LoginContainer() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setSnackbar({
-      open: true,
-      message: 'Google sign-in is not enabled in local auth mode',
-      severity: 'error'
-    });
-  };
+  const handleRegister = async (data: LoginFormData, projectName: string) => {
+    try {
+      const trimmed = projectName.trim();
+      if (!trimmed) {
+        setSnackbar({
+          open: true,
+          message: 'Please select a workspace first',
+          severity: 'error',
+        });
+        return;
+      }
 
-  const handleMicrosoftSignIn = async () => {
-    setSnackbar({
-      open: true,
-      message: 'Microsoft sign-in is not enabled in local auth mode',
-      severity: 'error'
-    });
+      setLoading(true);
+      const registerResp = await apiClient.post('/auth/register', {
+        project_name: trimmed,
+        email: data.email,
+        password: data.password,
+      });
+
+      localStorage.setItem('coreport.token', registerResp.data.access_token);
+      navigate('/');
+    } catch (error: any) {
+      setSnackbar({
+        open: true,
+        message: error?.response?.data?.detail || error?.message || 'Failed to create account',
+        severity: 'error'
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
       <LoginPresentation
         onSignIn={handleSignIn}
-        onGoogleSignIn={handleGoogleSignIn}
-        onMicrosoftSignIn={handleMicrosoftSignIn}
+        onRegister={handleRegister}
         loading={loading}
       />
       <Snackbar

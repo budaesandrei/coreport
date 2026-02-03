@@ -5,8 +5,7 @@ export interface LoginFormData {
 
 export interface LoginPresentationProps {
   onSignIn: (data: LoginFormData) => void;
-  onGoogleSignIn: () => void;
-  onMicrosoftSignIn: () => void;
+  onRegister: (data: LoginFormData, projectName: string) => void;
   loading: boolean;
 }
 
@@ -22,4 +21,4 @@ export const formValidationRules = {
   password: {
     required: 'Password is required',
   },
-}; 
+};
