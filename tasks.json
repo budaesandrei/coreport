@@ -1,0 +1,47 @@
+[
+  {
+    "feature": "Merge Coreport-Project app (keep UI + domain endpoints)",
+    "description": "Bring over the best parts of budaesandrei/coreport-project (frontend application UI + backend projects/invitations/entities APIs) into this repo, while removing AWS-only infra assumptions.",
+    "steps": [
+      "Clone and inspect budaesandrei/coreport-project branches (dev/uat/main) and identify the 'application' frontend + backend routers to port.",
+      "Port frontend 'application' into coreport/frontend (or adjust monorepo structure accordingly), preserving routing, Theme/User context, and MUI layout.",
+      "Port backend routers (projects, invitations, entity_types, entity_attributes, providers, project_users) into coreport/backend under app/api/v1/endpoints (or equivalent).",
+      "Ensure backend still starts locally via docker compose and exposes Swagger at http://localhost:8000/docs."
+    ],
+    "passes": false
+  },
+  {
+    "feature": "Local auth with email+password + invitations",
+    "description": "At http://localhost:3000 user can click Login and authenticate with email+password (local dev). Invitations flow should still work.",
+    "steps": [
+      "Decide auth approach for dev: (A) cognito-local + aws-amplify, or (B) local DB users + JWT.",
+      "Implement docker-compose services needed (auth provider + email capture or fake SNS).",
+      "Implement backend endpoints for signup/login/invite acceptance (or adapt existing invitation flow).",
+      "Implement frontend login page/button and session persistence.",
+      "Verify end-to-end: register/login works in browser, and API calls are authenticated."
+    ],
+    "passes": false
+  },
+  {
+    "feature": "Portal: project/tenant creation + initial seeded templates",
+    "description": "On first login, user can create/select a Project/Tenant, and see template Entities + Report Packages preloaded.",
+    "steps": [
+      "Define core tables: tenants/projects, users, memberships, entities, report_packages/types/fields.",
+      "Add seed script to create: default tenant/project + sample property entities + 'Financial Package' templates.",
+      "Add frontend screens to create/select project/tenant and browse templates.",
+      "Verify in UI after login: you can create/select a project and see seeded data."
+    ],
+    "passes": false
+  },
+  {
+    "feature": "Branding: improve Coreport logo",
+    "description": "Replace current SVG logo with a more professional mark and apply consistently in the UI.",
+    "steps": [
+      "(Orchestrator) Generate a new logo asset via an image model (or design directly as SVG).",
+      "Save as: frontend/src/assets/brand/coreport-logo.svg (plus optional PNG exports).",
+      "Update UI imports/usages (sidebar/topbar/login).",
+      "Verify it renders crisply at 24/32/48px on light/dark backgrounds."
+    ],
+    "passes": false
+  }
+]

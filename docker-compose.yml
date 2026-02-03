@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: coreport
+      POSTGRES_PASSWORD: coreport
+      POSTGRES_DB: coreport
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U coreport -d coreport"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+    environment:
+      ENV: dev
+      DATABASE_URL: postgresql+asyncpg://coreport:coreport@postgres:5432/coreport
+      CORS_ORIGINS: http://localhost:3000
+      FILE_STORAGE_PATH: /data/storage
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      SIGNED_URL_SECRET: ${SIGNED_URL_SECRET:-dev-secret-change-me}
+      STORE_LLM_TRACES: ${STORE_LLM_TRACES:-true}
+    volumes:
+      - ./backend:/app
+      - storage:/data/storage
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
+  storage:
