@@ -1,35 +1,5 @@
-:root{
-  --bg: #0b0c10;
-  --panel: #111318;
-  --muted: #8b93a7;
-  --text: #e9ecf5;
-  --border: rgba(255,255,255,0.08);
-  --accent: #7c5cff;
-
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  line-height: 1.4;
-  font-weight: 400;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-:root[data-theme="light"]{
-  --bg: #f7f7fb;
-  --panel: #ffffff;
-  --muted: #5b647a;
-  --text: #0f172a;
-  --border: rgba(2,6,23,0.10);
-  --accent: #5b34ff;
-}
-
-html, body, #root{ height: 100%; }
-body{ margin:0; background: var(--bg); color: var(--text); }
-
-a{ color: var(--accent); text-decoration: none; }
-a:hover{ text-decoration: underline; }
-
-button, select, input{
-  font: inherit;
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }

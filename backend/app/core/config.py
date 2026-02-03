@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import AnyHttpUrl, Field
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,7 +16,16 @@ class Settings(BaseSettings):
     STORE_LLM_TRACES: bool = Field(default=False)
 
     FILE_STORAGE_PATH: str = Field(default="/tmp/coreport-storage")
-    SIGNED_URL_SECRET: str = Field(default="dev-secret-change-me")
+    SIGNED_URL_SECRET: str | None = Field(default=None)
+
+    # Auth (local dev)
+    JWT_SECRET: str = Field(default="dev-jwt-secret-change-me")
+    JWT_EXPIRES_MINUTES: int = Field(default=60 * 24)
+
+    # Email (local dev via MailHog)
+    SMTP_HOST: str = Field(default="mailhog")
+    SMTP_PORT: int = Field(default=1025)
+    SMTP_FROM: str = Field(default="no-reply@coreport.local")
 
 
 settings = Settings()

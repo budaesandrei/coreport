@@ -1,0 +1,124 @@
+import { styled } from '@mui/material/styles';
+import { Paper, Button, TextField, Box, Typography } from '@mui/material';
+
+export const CompleteRegistrationContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '100vh',
+  padding: '20px',
+  background: `
+    radial-gradient(circle at 10% 20%, ${theme.palette.primary.main}30 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, ${theme.palette.secondary.main}90 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, ${theme.palette.info.main}25 0%, transparent 60%),
+    linear-gradient(135deg, ${theme.palette.primary.main}05 0%, ${theme.palette.secondary.main}05 50%, ${theme.palette.info.main}05 100%)
+  `,
+}));
+
+export const CompleteRegistrationPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(4),
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  width: '100%',
+  maxWidth: '400px',
+  borderRadius: '12px',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+  backdropFilter: 'blur(12px)',
+  border: `1px solid ${theme.palette.divider}30`,
+  backgroundColor: `${theme.palette.background.paper}55`,
+}));
+
+export const LogoContainer = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: theme.spacing(2),
+  gap: theme.spacing(2),
+}));
+
+export const Logo = styled('img')({
+  width: '48px',
+  height: '48px',
+  transition: 'transform 0.3s ease',
+  '&:hover': {
+    transform: 'scale(1.1)',
+  },
+  filter: 'drop-shadow(0 0 10px rgba(0, 0, 0, 0.5))',
+});
+
+export const HeaderContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  marginBottom: theme.spacing(4),
+}));
+
+export const CompanyName = styled(Typography)(({ theme }) => ({
+  fontWeight: 700,
+  letterSpacing: '0.5px',
+  color: theme.palette.primary.main,
+  textShadow: '0 4px 8px rgba(0, 0, 0, 0.5)',
+})) as typeof Typography;
+
+export const Tagline = styled(Typography)(({ theme }) => ({
+  marginTop: theme.spacing(1),
+  textAlign: 'center',
+  maxWidth: '300px',
+  lineHeight: 1.5,
+}));
+
+export const StyledTextField = styled(TextField)(({ theme }) => ({
+  width: '100%',
+  '& .MuiOutlinedInput-root': {
+    borderRadius: '8px',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: theme.palette.primary.main,
+      },
+    },
+  },
+}));
+
+export const StyledButton = styled(Button)(({ theme }) => ({
+  width: '100%',
+  padding: theme.spacing(1.5),
+  borderRadius: '8px',
+  textTransform: 'none',
+  fontWeight: 600,
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    transform: 'translateY(-1px)',
+  },
+}));
+
+export const ErrorMessage = styled(Typography)(({ theme }) => ({
+  color: theme.palette.error.main,
+  textAlign: 'center',
+  marginTop: theme.spacing(2),
+  padding: theme.spacing(2),
+  backgroundColor: theme.palette.error.light + '20',
+  borderRadius: '8px',
+  width: '100%',
+}));
+
+export const Divider = styled('div')(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  textAlign: 'center',
+  margin: theme.spacing(3, 0),
+  color: theme.palette.text.secondary,
+  '&::before, &::after': {
+    content: '""',
+    flex: 1,
+    borderBottom: `1px solid ${theme.palette.divider}90`,
+  },
+  '&::before': {
+    marginRight: theme.spacing(1),
+  },
+  '&::after': {
+    marginLeft: theme.spacing(1),
+  },
+})); 

@@ -1,4 +1,5 @@
 from app.models.approval_comment import ApprovalComment
+from app.models.auth_user import AuthUser
 from app.models.entity import Entity
 from app.models.mapping import Mapping
 from app.models.mapping_cache import MappingCache
@@ -16,6 +17,7 @@ from app.models.validation_rule import ValidationRule
 
 __all__ = [
     "ApprovalComment",
+    "AuthUser",
     "Entity",
     "Mapping",
     "MappingCache",

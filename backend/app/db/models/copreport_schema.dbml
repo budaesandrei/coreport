@@ -1,0 +1,221 @@
+Enum ProjectStatus {
+  active
+  suspended
+  archived
+  deleted
+}
+
+Table projects {
+  id int [pk]
+  name varchar
+  slug varchar
+  status ProjectStatus
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+  delete_flag varchar
+}
+
+Enum UserStatus {
+  active
+  invited
+  suspended
+  deactivated
+}
+
+Enum GlobalUserRole {
+  user
+  super_admin
+  support
+}
+
+Table users {
+  id int [pk]
+  email varchar
+  first_name varchar
+  last_name varchar
+  global_role GlobalUserRole
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+}
+
+Enum ProjectRole {
+  project_admin
+  report_submitter
+  report_approver
+  viewer
+}
+
+Table project_users {
+  id int [pk]
+  user_id int [ref: > users.id]
+  project_id int [ref: > projects.id]
+  provider_id int [ref: > providers.id]
+  role ProjectRole
+  status UserStatus
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+}
+
+Table providers {
+  id int [pk]
+  project_id int [ref: > projects.id]
+  name varchar
+  description text
+  is_active boolean
+  is_deleted boolean
+  deleted_at datetime
+  deleted_by varchar
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+}
+
+Table entity_types {
+  id int [pk]
+  project_id int [ref: > projects.id]
+  name varchar
+  description text
+  is_active boolean
+  is_deleted boolean
+  deleted_at datetime
+  deleted_by varchar
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+}
+
+Table entity_attributes {
+  id int [pk]
+  project_id int [ref: > projects.id]
+  entity_type_id int [ref: > entity_types.id]
+  name varchar
+  description text
+  is_primary boolean
+  type varchar
+  required boolean
+  attribute_order int
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+}
+
+Table entities {
+  id int [pk]
+  entity_type_id int [ref: > entity_types.id]
+  provider_id int [ref: > providers.id]
+  name varchar
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+  is_active boolean
+}
+
+Table report_types {
+  id int [pk]
+  project_id int [ref: > projects.id]
+  name varchar
+  description text
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+  is_active boolean
+}
+
+Table report_mappings {
+  id int [pk]
+  report_type_id int [ref: > report_types.id]
+  name varchar
+  type varchar
+  required boolean
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+  is_active boolean
+}
+
+Table schedules {
+  id int [pk]
+  project_id int [ref: > projects.id]
+  frequency varchar
+  start_date date
+  due_date_submission date
+  due_date_approval date
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+  is_active boolean
+}
+
+Table data_packets {
+  id int [pk]
+  project_id int [ref: > projects.id]
+  name varchar
+  description text
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+  is_active boolean
+}
+
+Table data_packet_reports {
+  id int [pk]
+  data_packet_id int [ref: > data_packets.id]
+  report_type_id int [ref: > report_types.id]
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+  is_active boolean
+}
+
+Table data_packet_entities {
+  id int [pk]
+  data_packet_id int [ref: > data_packets.id]
+  entity_id int [ref: > entities.id]
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+  is_active boolean
+}
+
+Table data_packet_schedules {
+  id int [pk]
+  data_packet_id int [ref: > data_packets.id]
+  schedule_id int [ref: > schedules.id]
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+  is_active boolean
+}
+
+Table submissions {
+  id int [pk]
+  report_type_id int [ref: > report_types.id]
+  entity_id int [ref: > entities.id]
+  provider_id int [ref: > providers.id]
+  submitted_by int [ref: > project_users.id]
+  approved_by int [ref: > project_users.id]
+  status varchar
+  submitted_at datetime
+  created_at datetime
+  created_by varchar
+  updated_at datetime
+  updated_by varchar
+  is_active boolean
+}

@@ -1,0 +1,77 @@
+You are an expert in TypeScript, React, Vite, React Router, Material UI, and authenticated frontend application design. This folder contains the main SaaS application that authenticated users access. It is built using functional React components and follows a modular, scalable architecture.
+
+Key Principles
+- Prioritize type safety, UI consistency, and modular code design.
+- Enforce separation of concerns: API access, hooks, logic, and UI presentation layers must be clearly separated.
+- All application logic must be accessible via hooks and services, not embedded in components.
+- Avoid global state unless necessary. Use `useState`, `useContext`, or `useReducer` locally where possible.
+- Avoid unnecessary re-renders and side effects. Use `useMemo`, `useCallback`, and `React.memo` where appropriate.
+- Use `@paths` for imports instead of relative imports, except for files within the same folder.
+- Avoid anonymous default exports. Use named exports for clarity and improved tooling support.
+
+Routing and Navigation
+- All routing is defined in `src/router/AppRouter.tsx`. **Always update this file when adding new pages**.
+- Pages are split into:
+  - **Public routes** (e.g., login, registration, confirmation).
+  - **Protected routes**, which must be wrapped in `<AuthGate>`.
+- Layouts (e.g., `MainLayout`) wrap all protected routes.
+- Use `react-router-dom`'s `Routes` and `Route` components for navigation, not custom solutions.
+
+Code Structure
+- Follow a **Container-Presentation** pattern:
+  - Containers contain business logic, hook usage, and data fetching.
+  - Presentational components are stateless and reusable.
+- Example directory:
+  pages/CompleteRegistration/
+    ├── CompleteRegistrationContainer.tsx
+    ├── CompleteRegistrationPresentation.tsx
+    ├── styles.ts
+    ├── index.ts
+    └── types.ts
+- All API response types must be defined in @types.
+
+Hooks
+- Custom hooks for API calls live in @hooks.
+- Hook names must start with `use` and return `{ data, loading, error }` (or an extended shape).
+- Hooks must abstract repetitive token logic, localStorage access, and side effects.
+- Hooks must not contain direct JSX or layout logic.
+
+TypeScript and State
+- All code must use TypeScript with strict null checking.
+- Prefer interface over type for object shapes.
+- Define local state using clear, boolean-prefixed variable names (isLoading, hasError).
+- Always initialize state values and avoid undefined/null unless explicitly handled.
+
+Styling and Theming
+- Use Material UI’s styled components and theme system.
+- Use @theme for all tokens (colors, spacing, typography).
+- Define shared styles in styles.ts within the module folder.
+
+UI Components
+- Use Material UI components unless a design-specific custom component is required.
+- Reuse atomic UI components from @components rather than redefining them.
+
+Performance
+- Wrap components in <Suspense> where lazy-loading is used.
+- Minimize useEffect usage — side effects must be deliberate and cleanly managed.
+- Avoid any; handle unknowns with proper types or error guards.
+
+Debugging and Validation
+- Always check the Problems and Terminal tabs after making edits.
+- Do not summarize or consider a change successful until all compile-time and runtime errors are resolved.
+- Ensure npm run dev builds cleanly with no errors.
+- Test that new routes/pages are registered and reachable via AppRouter.tsx.
+
+Key Conventions
+- Use named folders and exports for clarity.
+- Ensure each new screen has its own folder inside pages/, with both logic and view separated.
+- Forms must use schema-based validation (e.g., Yup or Zod) where possible.
+- Always remove stale or temporary tokens from localStorage after use.
+- Always add new screens to `src/router/AppRouter.tsx`; test they are reachable in the browser.
+
+API and Data Access
+- All HTTP requests use the shared Axios instance in `src/api/client.ts`.
+- Each API tag (e.g., invitations, projects) has its own file in `src/api/` and must return `.data` from responses.
+- Define response types in `@types` and consume them in hooks and UI.
+
+Refer to React, MUI, and TypeScript documentation for best practices.
