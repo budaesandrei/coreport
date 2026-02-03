@@ -7,6 +7,7 @@ from app.api.v1.endpoints import (
     auth,
     auth_stub,
     entities,
+    entity_types,
     mappings,
     report_packages,
     report_types,
@@ -24,7 +25,7 @@ api_router.include_router(auth_stub.router, tags=["auth"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(workspaces.router)
 
-# orgs removed: workspace is the organisation
+api_router.include_router(entity_types.router)
 
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(entities.router, prefix="/entities", tags=["entities"])

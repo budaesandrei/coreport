@@ -48,13 +48,33 @@ async def _seed() -> None:
                 ]
             )
 
+        # Entity Types
+        from app.models.entity_type import EntityType
+
+        res = await db.execute(
+            select(EntityType).where(EntityType.workspace_id == "default", EntityType.is_deleted == False)
+        )
+        if not res.scalars().first():
+            db.add_all(
+                [
+                    EntityType(
+                        workspace_id="default",
+                        name="Property",
+                        description="A real estate asset / property",
+                        is_active=True,
+                        created_by="system",
+                        updated_by="system",
+                    )
+                ]
+            )
+
         # Entities
         res = await db.execute(select(Entity).where(Entity.workspace_id == "default"))
         if not res.scalars().first():
             db.add_all(
                 [
-                    Entity(name="Sunset Towers", entity_type="property", external_id="PROP-001"),
-                    Entity(name="Riverside Lofts", entity_type="property", external_id="PROP-002"),
+                    Entity(name="Sunset Towers", entity_type="Property", external_id="PROP-001"),
+                    Entity(name="Riverside Lofts", entity_type="Property", external_id="PROP-002"),
                 ]
             )
 
