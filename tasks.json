@@ -6,13 +6,14 @@
       "Clone and inspect budaesandrei/coreport-project branches (dev/uat/main) and identify the 'application' frontend + backend routers to port.",
       "Port frontend 'application' into coreport/frontend (or adjust monorepo structure accordingly), preserving routing, Theme/User context, and MUI layout.",
       "Port backend routers (projects, invitations, entity_types, entity_attributes, providers, project_users) into coreport/backend under app/api/v1/endpoints (or equivalent).",
-      "Ensure backend still starts locally via docker compose and exposes Swagger at http://localhost:8000/docs."
+      "Ensure backend still starts locally via docker compose and exposes Swagger at http://localhost:8000/docs.",
+      "Add v1 endpoint shims for legacy routers and include them in the v1 API router."
     ],
-    "passes": false
+    "passes": true
   },
   {
     "feature": "Local auth with email+password + invitations",
-    "description": "At http://localhost:3000 user can click Login and authenticate with email+password (local dev). Invitations flow should still work.",
+    "description": "At http://localhost:3000 user can click Login and authenticate with email+password (local dev). Workspace (tenant) selection + invitations flow should work.",
     "steps": [
       "Decide auth approach for dev: (A) cognito-local + aws-amplify, or (B) local DB users + JWT.",
       "Implement docker-compose services needed (auth provider + email capture or fake SNS).",
@@ -23,13 +24,14 @@
     "passes": false
   },
   {
-    "feature": "Portal: project/tenant creation + initial seeded templates",
-    "description": "On first login, user can create/select a Project/Tenant, and see template Entities + Report Packages preloaded.",
+    "feature": "Portal: workspace creation + tenant switching + seeded templates",
+    "description": "On first login, user can create/select a Workspace (tenant), switch workspaces without logging out, and see template Entities + Report Packages preloaded.",
     "steps": [
-      "Define core tables: tenants/projects, users, memberships, entities, report_packages/types/fields.",
-      "Add seed script to create: default tenant/project + sample property entities + 'Financial Package' templates.",
-      "Add frontend screens to create/select project/tenant and browse templates.",
-      "Verify in UI after login: you can create/select a project and see seeded data."
+      "Define core tables: tenants(workspaces), users, memberships, entities, report_packages/types/fields.",
+      "Add seed script to create: default workspace + sample property entities + 'Financial Package' templates.",
+      "Add frontend screens to create/select workspace and browse templates.",
+      "Add workspace switcher in the topbar (no logout required to switch).",
+      "Verify in UI after login: you can create/select a workspace, switch it, and see seeded data."
     ],
     "passes": false
   },

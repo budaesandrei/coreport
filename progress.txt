@@ -1,0 +1,5 @@
+2026-02-03
+- Decision: UI term is "Workspace" (DB concept is tenant). Auth approach for this sprint is Option B: local email+password + JWT + MailHog for dev email.
+- Imported the existing portal UI from coreport-project/dev into coreport/frontend (MUI + router + login flow).
+- Next: implement user-scoped auth (JWT), workspace membership + switcher (X-Tenant-Id per request), and landing-style registration to create first workspace + admin.
+- Added v1 endpoint shims for legacy projects/invitations/entity_types/entity_attributes/providers/project_users routers and wired them into the v1 API router. Verified via a python3 script that the new shims exist and are included in backend/app/api/v1/api.py (docker daemon unavailable in this environment).
