@@ -4,6 +4,7 @@ import { Box, ThemeProvider } from '@mui/material';
 import Sidebar from '@layout/Sidebar';
 import Topbar from '@layout/Topbar';
 import Content from '@layout/Content';
+import NotificationsDrawer from '@components/notifications/NotificationsDrawer';
 import { darkTheme } from '@theme/theme';
 
 const TOPBAR_HEIGHT = 50;
@@ -49,6 +50,7 @@ const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
       {/* Dark theme for Topbar */}
       <ThemeProvider theme={darkTheme}>
         <Topbar topbarHeight={TOPBAR_HEIGHT} />
+        <NotificationsDrawer />
       </ThemeProvider>
       <Box display="flex" minHeight={`calc(100vh - ${TOPBAR_HEIGHT}px)`}>
         {/* Dark theme for Sidebar */}
