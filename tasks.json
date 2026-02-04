@@ -8,7 +8,7 @@
       "Ensure content spacing works at 360px width.",
       "Test key pages on a mobile viewport."
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 2,
@@ -85,7 +85,7 @@
       "Implement system mode via prefers-color-scheme.",
       "Persist user preference (localStorage then backend later)."
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 9,

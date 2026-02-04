@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Box, ThemeProvider } from '@mui/material';
+import { Box, ThemeProvider, useMediaQuery } from '@mui/material';
 import Sidebar from '@layout/Sidebar';
 import Topbar from '@layout/Topbar';
 import Content from '@layout/Content';
@@ -14,6 +14,9 @@ const SIDEBAR_COLLAPSE_STORAGE_KEY = 'coreport.sidebarCollapsed';
 
 const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  const isMobile = useMediaQuery(darkTheme.breakpoints.down('md'));
 
   useEffect(() => {
     try {
@@ -24,12 +27,18 @@ const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     }
   }, []);
 
-  const sidebarWidth = useMemo(
-    () => (sidebarCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED),
-    [sidebarCollapsed]
-  );
+  const sidebarWidth = useMemo(() => {
+    if (isMobile) return SIDEBAR_WIDTH_EXPANDED;
+    return sidebarCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH_EXPANDED;
+  }, [isMobile, sidebarCollapsed]);
 
   const toggleSidebar = () => {
+    // On mobile, the sidebar is an overlay drawer (no collapsed mode)
+    if (isMobile) {
+      setMobileSidebarOpen(true);
+      return;
+    }
+
     setSidebarCollapsed((prev) => {
       const next = !prev;
       try {
@@ -41,6 +50,11 @@ const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     });
   };
 
+  useEffect(() => {
+    // If we leave mobile layout, ensure the overlay drawer is closed.
+    if (!isMobile) setMobileSidebarOpen(false);
+  }, [isMobile]);
+
   return (
     <Box
       sx={{
@@ -49,7 +63,11 @@ const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
     >
       {/* Dark theme for Topbar */}
       <ThemeProvider theme={darkTheme}>
-        <Topbar topbarHeight={TOPBAR_HEIGHT} />
+        <Topbar
+          topbarHeight={TOPBAR_HEIGHT}
+          showNavToggle={isMobile}
+          onOpenSidebar={() => setMobileSidebarOpen(true)}
+        />
         <NotificationsDrawer />
       </ThemeProvider>
       <Box display="flex" minHeight={`calc(100vh - ${TOPBAR_HEIGHT}px)`}>
@@ -57,12 +75,19 @@ const MainLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
         <ThemeProvider theme={darkTheme}>
           <Sidebar
             sidebarWidth={sidebarWidth}
-            collapsed={sidebarCollapsed}
+            collapsed={isMobile ? false : sidebarCollapsed}
             onToggleCollapsed={toggleSidebar}
+            variant={isMobile ? 'temporary' : 'permanent'}
+            open={isMobile ? mobileSidebarOpen : true}
+            onClose={() => setMobileSidebarOpen(false)}
+            onNavigate={() => setMobileSidebarOpen(false)}
+            hideCollapseToggle={isMobile}
           />
         </ThemeProvider>
         {/* Content uses the main theme from ThemeContext */}
-        <Content topbarHeight={TOPBAR_HEIGHT}>{children ?? <Outlet />}</Content>
+        <Content topbarHeight={TOPBAR_HEIGHT} insetRadius={!isMobile}>
+          {children ?? <Outlet />}
+        </Content>
       </Box>
     </Box>
   );
