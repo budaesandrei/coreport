@@ -4,3 +4,6 @@
 - Cleanup: renamed tenant/project/org concepts to workspace-only throughout backend + frontend.
 - DB reset approved: we can drop volumes to simplify destructive schema changes.
 - Hard rule: before telling Dre to check localhost:3000, run a Playwright visual sanity check (no more blind "it should work").
+
+2026-02-04
+- Task 2 (UX: Sidebar collapse) implemented: animated ease-out collapse/expand toggle, icons-only collapsed mode, persisted in localStorage.
