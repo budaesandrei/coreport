@@ -108,11 +108,18 @@ const Sidebar: React.FC<Props> = ({ sidebarWidth, collapsed, onToggleCollapsed }
                     key={item.label}
                     onClick={() => handleNavigation(item.path)}
                     selected={selectedPath === item.path}
+                    aria-label={item.label}
                     sx={{
                       borderTopRightRadius: 20,
                       borderBottomRightRadius: 20,
                       justifyContent: collapsed ? 'center' : 'flex-start',
                       px: collapsed ? 1 : 2,
+                      // Ensure visible focus ring, especially in collapsed (icon-only) mode
+                      '&.Mui-focusVisible': {
+                        outline: '2px solid',
+                        outlineColor: 'primary.main',
+                        outlineOffset: 2,
+                      },
                     }}
                   >
                     {item.icon && (

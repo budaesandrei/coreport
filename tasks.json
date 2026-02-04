@@ -30,7 +30,7 @@
       "Ensure aria-labels present for each nav item.",
       "Verify tab order + focus ring."
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 4,
