@@ -1,6 +1,11 @@
-2026-02-03
-- Decision: UI term is "Workspace". Remove "Org" concept: workspace is the organisation. Auth is local email+password + JWT.
-- Imported existing portal UI from coreport-project/dev into coreport/frontend (MUI + router + login flow).
-- Cleanup: renamed tenant/project/org concepts to workspace-only throughout backend + frontend.
-- DB reset approved: we can drop volumes to simplify destructive schema changes.
-- Hard rule: before telling Dre to check localhost:3000, run a Playwright visual sanity check (no more blind "it should work").
+2026-02-04
+- Task 28: Added per-entity assignments table.
+  - Backend: new ORM model app/models/entity_assignment.py with role enum (submitter/approver) and active flag.
+  - DB: Alembic migration 0007_entity_assignments creates entity_assignments with indexes + FK constraints.
+  - Seed: app/db/seed.py now seeds assignments (bob=submitter, carol=approver) for default entities.
+
+Verification
+- sudo docker compose run --rm backend alembic upgrade head
+- sudo docker compose exec -T postgres psql -U coreport -d coreport -c "\\d entity_assignments"
+- sudo docker compose run --rm backend python -m app.db.seed
+- sudo docker compose exec -T postgres psql -U coreport -d coreport -c "select workspace_id, role, count(*) from entity_assignments group by 1,2;"
