@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.context import get_current_tenant_id
+from app.core.context import get_current_workspace_id
 from app.db.session import get_db
 from app.models.report_type import ReportType
 from app.schemas.report_type import ReportTypeCreate, ReportTypeOut
@@ -14,8 +14,8 @@ router = APIRouter()
 
 @router.get("/", response_model=list[ReportTypeOut])
 async def list_report_types(db: AsyncSession = Depends(get_db)) -> list[ReportType]:
-    tenant_id = get_current_tenant_id()
-    res = await db.execute(select(ReportType).where(ReportType.tenant_id == tenant_id).order_by(ReportType.id))
+    workspace_id = get_current_workspace_id()
+    res = await db.execute(select(ReportType).where(ReportType.workspace_id == workspace_id).order_by(ReportType.id))
     return list(res.scalars().all())
 
 

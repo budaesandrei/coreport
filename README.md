@@ -32,14 +32,14 @@ After `make migrate && make seed`, you can log in with:
 - **Password:** `dev-password`
 - **Workspace:** `Default Workspace` (slug: `default`)
 
-## Multi-tenancy headers
+## Workspace scoping headers
 
 Every request is scoped by headers:
 
-- `X-Tenant-Id` (default: `default`)
+- `X-Workspace-Id` (default: `default`)
 - `X-User-Name` (default: `System`)
 
-If you're calling the API directly (curl/Postman), include `X-Tenant-Id: default` to access the seeded data.
+If you're calling the API directly (curl/Postman), include `X-Workspace-Id: default` to access the seeded data.
 
 ## OpenAI mapping
 

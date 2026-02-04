@@ -20,7 +20,8 @@ import logoDark from '@assets/images/logo_dark.webp';
 import logoWhite from '@assets/images/logo_white.webp';
 
 type Props = {
-  token: string | null;
+  // token was used in the legacy invitation flow; kept for future work.
+  token?: string | null;
   data: any;
   detailsLoading: boolean;
   loading: boolean;
@@ -31,7 +32,7 @@ type Props = {
 };
 
 const CompleteRegistrationPresentation = ({ 
-  token, 
+  // token,
   data, 
   detailsLoading,
   loading, 

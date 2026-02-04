@@ -4,6 +4,7 @@ import { Snackbar, Alert } from '@mui/material';
 import LoginPresentation from './LoginPresentation';
 import { LoginFormData } from './props';
 import apiClient from '@api/client';
+import { notifyAuthChanged } from '@hooks/useAuth';
 
 export default function LoginContainer() {
   const navigate = useNavigate();
@@ -20,9 +21,8 @@ export default function LoginContainer() {
 
   const handleSignIn = async (data: LoginFormData) => {
     try {
-      const projectIdStr = localStorage.getItem('project_id');
-      const projectId = projectIdStr ? Number(projectIdStr) : 0;
-      if (!projectId) {
+      const workspaceId = localStorage.getItem('workspace_id');
+      if (!workspaceId) {
         setSnackbar({
           open: true,
           message: 'Please select a workspace first',
@@ -33,11 +33,12 @@ export default function LoginContainer() {
 
       setLoading(true);
       const resp = await apiClient.post('/auth/login', {
-        project_id: projectId,
+        workspace_slug: workspaceId,
         email: data.email,
         password: data.password,
       });
       localStorage.setItem('coreport.token', resp.data.access_token);
+      notifyAuthChanged();
       navigate('/');
     } catch (error: any) {
       setSnackbar({
@@ -64,12 +65,13 @@ export default function LoginContainer() {
 
       setLoading(true);
       const registerResp = await apiClient.post('/auth/register', {
-        project_name: trimmed,
+        workspace_name: trimmed,
         email: data.email,
         password: data.password,
       });
 
       localStorage.setItem('coreport.token', registerResp.data.access_token);
+      notifyAuthChanged();
       navigate('/');
     } catch (error: any) {
       setSnackbar({

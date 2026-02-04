@@ -7,7 +7,7 @@ from app.schemas.org import *
 from app.schemas.report_package import *
 from app.schemas.report_type import *
 from app.schemas.submission import *
-from app.schemas.tenant import *
+# tenant schemas removed (workspace-only)
 from app.schemas.upload import *
 from app.schemas.user import *
 from app.schemas.validation_rule import *

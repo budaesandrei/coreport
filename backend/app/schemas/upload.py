@@ -8,7 +8,6 @@ from app.schemas.common import ItemBase
 class UploadJobOut(ItemBase):
     file_name: str
     status: str
-    org_id: int | None
     entity_id: int | None
     report_type_id: int | None
 

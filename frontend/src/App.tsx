@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import AppRouter from '@router/AppRouter';
 import { UserProvider } from '@context/UserContext';
 import { ThemeProvider } from '@context/ThemeContext';
+import { NotificationsProvider } from '@context/NotificationsContext';
 import { CssBaseline } from '@mui/material';
 
 function App() {
@@ -11,7 +12,9 @@ function App() {
       <ThemeProvider>
         <CssBaseline />
         <UserProvider>
-          <AppRouter />
+          <NotificationsProvider>
+            <AppRouter />
+          </NotificationsProvider>
         </UserProvider>
       </ThemeProvider>
     </BrowserRouter>

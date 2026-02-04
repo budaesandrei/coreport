@@ -10,7 +10,7 @@ from app.db.mixin import BaseMixin
 class AuthUser(Base, BaseMixin):
     """Local auth user (dev).
 
-    Scoped by tenant_id (tenant == project).
+    Scoped by workspace_id.
     """
 
     email: Mapped[str] = mapped_column(String(255), nullable=False, index=True)

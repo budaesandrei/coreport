@@ -11,8 +11,9 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from app.core.config import settings
 from app.db.base import Base
 
-# Ensure models are imported for autogenerate
-import app.models  # noqa: F401  # isort: skip
+# NOTE: Legacy models from coreport-project live under app.db.models.
+# Our initial scaffold models live under app.models.
+# Autogenerate is disabled for now to avoid duplicate table declarations.
 
 config = context.config
 

@@ -1,9 +1,4 @@
-import { ProjectResolveRequest, ProjectInfoResponse } from "@types";
-import apiClient from "./client";
+// Deprecated file kept temporarily for compatibility during refactor.
+// Use `./workspaces` instead.
 
-const ENDPOINT = "/projects";
-
-export const getProjectByName = async (projectResolveRequest: ProjectResolveRequest): Promise<ProjectInfoResponse> => {
-    const response = await apiClient.post(`${ENDPOINT}/resolve`, projectResolveRequest);
-    return response.data;
-};
+export * from "./workspaces";

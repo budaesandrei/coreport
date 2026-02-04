@@ -4,13 +4,13 @@ from pydantic import BaseModel, EmailStr, Field
 
 
 class RegisterIn(BaseModel):
-    project_name: str = Field(min_length=1)
+    workspace_name: str = Field(min_length=1)
     email: EmailStr
     password: str = Field(min_length=8)
 
 
 class LoginIn(BaseModel):
-    project_id: int
+    workspace_slug: str = Field(min_length=1)
     email: EmailStr
     password: str
 
@@ -21,6 +21,6 @@ class TokenOut(BaseModel):
 
 
 class MeOut(BaseModel):
-    project_id: int
-    tenant_id: str
+    workspace_id: int
+    workspace_slug: str
     email: EmailStr
