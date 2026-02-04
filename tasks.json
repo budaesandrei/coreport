@@ -1,51 +1,46 @@
 [
-  {
-    "feature": "Merge Coreport-Project app (keep UI + domain endpoints)",
-    "description": "Bring over the best parts of budaesandrei/coreport-project (frontend application UI + backend projects/invitations/entities APIs) into this repo, while removing AWS-only infra assumptions.",
-    "steps": [
-      "Clone and inspect budaesandrei/coreport-project branches (dev/uat/main) and identify the 'application' frontend + backend routers to port.",
-      "Port frontend 'application' into coreport/frontend (or adjust monorepo structure accordingly), preserving routing, Theme/User context, and MUI layout.",
-      "Port backend routers (projects, invitations, entity_types, entity_attributes, providers, project_users) into coreport/backend under app/api/v1/endpoints (or equivalent).",
-      "Ensure backend still starts locally via docker compose and exposes Swagger at http://localhost:8000/docs.",
-      "Add v1 endpoint shims for legacy routers and include them in the v1 API router."
-    ],
-    "passes": true
-  },
-  {
-    "feature": "Local auth with email+password + invitations",
-    "description": "At http://localhost:3000 user can click Login and authenticate with email+password (local dev). Workspace (tenant) selection + invitations flow should work.",
-    "steps": [
-      "Decide auth approach for dev: (A) cognito-local + aws-amplify, or (B) local DB users + JWT.",
-      "Implement docker-compose services needed (auth provider + email capture or fake SNS).",
-      "Implement backend endpoints for signup/login/invite acceptance (or adapt existing invitation flow).",
-      "Implement frontend login page/button and session persistence.",
-      "Verify end-to-end: register/login works in browser, and API calls are authenticated.",
-      "Align /api/v1/auth register/login to use Project records and AuthUser tenant_id derived from project id.",
-      "Update Complete Registration flow to call local /auth/register, accept invitation token, and disable social sign-in buttons."
-    ],
-    "passes": true
-  },
-  {
-    "feature": "Portal: workspace creation + tenant switching + seeded templates",
-    "description": "On first login, user can create/select a Workspace (tenant), switch workspaces without logging out, and see template Entities + Report Packages preloaded.",
-    "steps": [
-      "Define core tables: tenants(workspaces), users, memberships, entities, report_packages/types/fields.",
-      "Add seed script to create: default workspace + sample property entities + 'Financial Package' templates.",
-      "Add frontend screens to create/select workspace and browse templates.",
-      "Add workspace switcher in the topbar (no logout required to switch).",
-      "Verify in UI after login: you can create/select a workspace, switch it, and see seeded data."
-    ],
-    "passes": false
-  },
-  {
-    "feature": "Branding: improve Coreport logo",
-    "description": "Replace current SVG logo with a more professional mark and apply consistently in the UI.",
-    "steps": [
-      "(Orchestrator) Generate a new logo asset via an image model (or design directly as SVG).",
-      "Save as: frontend/src/assets/brand/coreport-logo.svg (plus optional PNG exports).",
-      "Update UI imports/usages (sidebar/topbar/login).",
-      "Verify it renders crisply at 24/32/48px on light/dark backgrounds."
-    ],
-    "passes": false
-  }
+  {"id":1,"feature":"UX: Mobile-friendly shell","description":"Make topbar + sidebar + content responsive and usable on mobile.","steps":["Define breakpoints for sidebar behaviour (overlay on mobile, persistent on desktop).","Ensure content spacing works at 360px width.","Test key pages on a mobile viewport."],"status":"todo"},
+  {"id":2,"feature":"UX: Sidebar collapse (icons-only) + animated easing","description":"Add a sleek collapse/expand button with fast→slow easing; collapsed shows icons only.","steps":["Implement collapsed sidebar width and icon-only layout.","Add animation (fast→slow easing).","Persist collapsed state per-user (localStorage ok for now)."],"status":"todo"},
+  {"id":3,"feature":"UX: Collapsed sidebar accessibility","description":"Tooltips + aria-labels when collapsed; keyboard navigation works.","steps":["Add tooltips to icon buttons when collapsed.","Ensure aria-labels present for each nav item.","Verify tab order + focus ring."],"status":"todo"},
+  {"id":4,"feature":"Notifications: Icon button + badge","description":"Use existing icon button stub and display unread badge count.","steps":["Wire notification count state (API stub initially).","Render badge on icon button.","Add click handler to open notifications panel."],"status":"todo"},
+  {"id":5,"feature":"Notifications: Panel/drawer","description":"List notifications; mark read; show empty state.","steps":["Create notifications drawer UI.","Add mark-read endpoint (or stub) + optimistic update.","Empty state + loading state."],"status":"todo"},
+  {"id":6,"feature":"Auth: Logout under avatar","description":"Add logout action under user avatar; clear token + workspace selection.","steps":["Add menu item under avatar.","Clear auth token and workspace_id storage.","Redirect to workspace entry/login."],"status":"todo"},
+  {"id":7,"feature":"Theme: Improve dark mode styling","description":"Style beyond background/text: cards, borders, inputs, sidebar, active states.","steps":["Audit MUI theme tokens (palette, background, divider, action states).","Tune component overrides (Paper, AppBar, Drawer, Button, TextField).","Verify contrast + focus states in dark mode."],"status":"todo"},
+  {"id":8,"feature":"Theme: Add System mode","description":"Add light/dark/system; system follows OS preference; persist per-user.","steps":["Add theme mode selector.","Implement system mode via prefers-color-scheme.","Persist user preference (localStorage then backend later)."],"status":"todo"},
+  {"id":9,"feature":"UX: Breadcrumb component for multi-step flows","description":"Reusable breadcrumb for flows; supports click-back; shows current step.","steps":["Build component API (items, current, onNavigate).","Style it sleek/minimal.","Add to multi-step pages (submission flow first)."],"status":"todo"},
+  {"id":10,"feature":"UX: Standard multi-step page layout","description":"Page header + breadcrumbs + step content layout.","steps":["Create layout component for flows.","Apply to submission flow and mapping UI.","Ensure responsive behaviour."],"status":"todo"},
+
+  {"id":11,"feature":"Users: Admin creates accounts (john/mike)","description":"Admin can create users in workspace with email+password; send invite/reset email via MailHog.","steps":["Backend: admin-only create user endpoint.","Generate temporary password or reset token.","Send email via dev mailer (MailHog)."],"status":"todo"},
+  {"id":12,"feature":"Users: Workspace memberships + roles","description":"Implement membership + roles (admin/submitter/approver); enforce in API and UI.","steps":["Backend: membership model + role enum.","Dependencies: require workspace membership and role checks.","Frontend: role-aware navigation + guards."],"status":"todo"},
+  {"id":13,"feature":"Workspace settings: canonical data language","description":"Workspace-level setting for data language used by mapper/translation output.","steps":["Backend: workspace_settings storage.","API: get/update settings (admin-only update).","Frontend: settings page UI."],"status":"todo"},
+  {"id":14,"feature":"User settings: UI language","description":"Per-user UI language setting; default from workspace.","steps":["Backend: user_settings storage.","API: get/update user settings.","Frontend: user settings UI."],"status":"todo"},
+  {"id":15,"feature":"Auth: Wire /me into UI","description":"Frontend uses /auth/me (or /whoami) to render role + workspace context.","steps":["Add API call on app boot.","Populate user context store.","Update nav + permissions checks."],"status":"todo"},
+  {"id":16,"feature":"Terminology cleanup: workspace-only audit","description":"Ensure runtime code references workspace only (no tenant/project/org wording).","steps":["Search frontend/backend for tenant/org/project runtime strings.","Replace headers and payload keys (keep compat only where needed).","Update docs accordingly."],"status":"todo"},
+
+  {"id":17,"feature":"Entity Types: UI CRUD","description":"Admin UI to list/create/edit/delete entity types (workspace-scoped).","steps":["Add entity types page (list).","Add create/edit forms with validations.","Empty/loading/error states."],"status":"todo"},
+  {"id":18,"feature":"Entity Type fields: data model","description":"Admin defines custom properties (fields) per entity type (Address, Lat, Long, Country Code, etc).","steps":["Design schema: entity_type_fields (key, label, type, required, order, options).","Add DB migration.","Add API schemas."],"status":"todo"},
+  {"id":19,"feature":"Entity Type fields: validation + field types","description":"Support types (text/number/date/select) + required + basic validation.","steps":["Implement backend validation rules.","Support select options.","Add optional constraints (lat/long/country code)."],"status":"todo"},
+  {"id":20,"feature":"Entity Type fields: ordering + grouping","description":"Field ordering and optional UI grouping for nice forms.","steps":["Add order index to fields.","Allow reorder in UI.","Optional: group/section support."],"status":"todo"},
+  {"id":21,"feature":"Entity Type fields: CRUD endpoints","description":"Workspace-scoped CRUD for entity_type_fields.","steps":["Add /entity_types/{id}/fields endpoints.","Enforce admin-only modifications.","Return fields with entity type payload."],"status":"todo"},
+  {"id":22,"feature":"Field keys: stable mapper inputs","description":"Ensure field keys are canonical and stable (e.g. property_id, address1).","steps":["Add unique constraint per (workspace, entity_type, key).","Expose keys in API.","Document key naming guidance."],"status":"todo"},
+  {"id":23,"feature":"Seed: Example entity type fields","description":"Seed example fields for Property entity type.","steps":["Update seed script.","Ensure idempotent seed.","Verify via GET endpoints."],"status":"todo"},
+  {"id":24,"feature":"Permissions: Admin-only schema editing","description":"Lock entity type schema editing to admins.","steps":["Add dependency checks.","Add UI guards.","Add tests for forbidden access."],"status":"todo"},
+
+  {"id":25,"feature":"Entities: UI CRUD","description":"List/create/edit entities for an entity type; support archive.","steps":["Entities list page.","Create/edit form.","Archive/unarchive action + filter."],"status":"todo"},
+  {"id":26,"feature":"Entities: dynamic form from entity type fields","description":"Render per-entity custom field inputs based on entity_type_fields.","steps":["Fetch entity type fields.","Render controls per field type.","Client-side validation mirrors backend."],"status":"todo"},
+  {"id":27,"feature":"Entities: store field values","description":"Backend storage for per-entity field values (validated against schema).","steps":["Add entity_field_values storage.","Add CRUD in entities endpoints.","Validate values against entity_type_fields."],"status":"todo"},
+  {"id":28,"feature":"Assignments (per entity): model","description":"Assignments are per entity (submitter/approver) with active flag.","steps":["Create entity_assignments table: entity_id, user_id, role, active.","Add migration + indexes.","Define role enum submitter/approver."],"status":"todo"},
+  {"id":29,"feature":"Assignments: UI editor per entity","description":"Admin can assign submitters/approvers to each entity.","steps":["Build assignment editor UI (user picker + role).","Show current assignments.","Save changes via API."],"status":"todo"},
+  {"id":30,"feature":"Permissions: submitter entity visibility","description":"Submitter only sees entities assigned to them (unless admin).","steps":["API filtering by assignments.","UI empty states.","Tests for access control."],"status":"todo"},
+  {"id":31,"feature":"Approver dashboard: assigned entities + pending submissions","description":"Approver sees assigned entities and submissions needing review.","steps":["Backend endpoints for approver queue.","Frontend dashboard cards.","Link into approval flow."],"status":"todo"},
+  {"id":32,"feature":"Entities: CSV import","description":"Admin can import entities via CSV.","steps":["Define CSV format (name, external_id, plus field keys).","Backend import endpoint + validation report.","Frontend import UI + preview."],"status":"todo"},
+  {"id":33,"feature":"Entity identifiers: external_id conventions","description":"Support external_id and show clearly in UI.","steps":["Add external_id field + uniqueness constraints.","Expose in UI forms and lists.","Decide optional slug strategy."],"status":"todo"},
+
+  {"id":34,"feature":"Report Types/Templates: CRUD","description":"Admin defines report types/templates and required fields (optionally per provider).","steps":["Define models: report_types, report_fields (and providers if needed).","CRUD endpoints.","Frontend admin screens."],"status":"todo"},
+  {"id":35,"feature":"Schedules + submission periods","description":"Define schedules per report type (monthly/quarterly) and generate submission periods.","steps":["Add schedule model (frequency, anchor).","Generate submission periods.","Expose upcoming/overdue periods endpoints."],"status":"todo"},
+  {"id":36,"feature":"Submission flow UI (multi-step)","description":"Choose entity → report type → period → upload → map → review → submit.","steps":["Create multi-step pages using breadcrumbs.","Persist draft submission state.","Nice loading/empty states."],"status":"todo"},
+  {"id":37,"feature":"Uploads: accept CSV/XLSX/JSON/TXT/DAT","description":"Upload any data type; store raw and parsed artifacts for mapping.","steps":["Backend upload endpoint for submissions.","Store file + metadata.","Parse job scaffolding (sync for now, async later)."],"status":"todo"},
+  {"id":38,"feature":"Excel: detect most important tab","description":"Heuristics to pick sheet with core data (density/header-likeness).","steps":["Implement sheet scoring.","Expose selected sheet + alternatives.","Allow user override in UI."],"status":"todo"},
+  {"id":39,"feature":"Selectors: table regions + JSON paths","description":"Support mapping selectors: cell/column/range (CSV/XLSX/TXT) and JSON key paths.","steps":["Define selector formats for cell/range/column.","Define JSON path selector format.","UI to pick/preview selector values."],"status":"todo"},
+  {"id":40,"feature":"Mapper: persistence + priority + confidence + notifications","description":"Persist mappings per (workspace, report_type, entity_type, provider). Entity values override file values. Detect date formats/language and notify approvers on submit.","steps":["Implement mapping persistence tables and API.","Implement priority: entity field value > static override > file-derived.","Add confidence scoring + date format detection + language detection.","On submission submitted: create notifications for approvers + email via MailHog."],"status":"todo"}
 ]
