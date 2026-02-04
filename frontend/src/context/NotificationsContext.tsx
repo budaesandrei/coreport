@@ -1,12 +1,17 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { getUnreadNotificationCount } from '@api/notifications';
+import { listNotifications, markAllNotificationsRead, markNotificationRead } from '@api/notifications';
+import type { NotificationItem } from '@types/notifications';
 
 type NotificationsContextValue = {
+  notifications: NotificationItem[];
   unreadCount: number;
   loading: boolean;
   panelOpen: boolean;
-  refreshUnreadCount: () => Promise<void>;
+  refreshNotifications: () => Promise<void>;
   togglePanel: () => void;
+  closePanel: () => void;
+  markRead: (id: string) => Promise<void>;
+  markAllRead: () => Promise<void>;
 };
 
 const NotificationsContext = createContext<NotificationsContextValue | null>(null);
@@ -18,33 +23,68 @@ export function useNotifications() {
 }
 
 export function NotificationsProvider({ children }: { children: React.ReactNode }) {
-  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
 
-  const refreshUnreadCount = useCallback(async () => {
+  const refreshNotifications = useCallback(async () => {
     setLoading(true);
     try {
-      const count = await getUnreadNotificationCount();
-      setUnreadCount(count);
+      const items = await listNotifications();
+      setNotifications(items);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    void refreshUnreadCount();
-  }, [refreshUnreadCount]);
+    void refreshNotifications();
+  }, [refreshNotifications]);
+
+  const unreadCount = useMemo(
+    () => notifications.filter((n) => !n.readAt).length,
+    [notifications]
+  );
+
+  const markRead = useCallback(async (id: string) => {
+    // Optimistic client-side update (stubbed backend)
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, readAt: n.readAt ?? new Date().toISOString() } : n))
+    );
+
+    try {
+      await markNotificationRead(id);
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const markAllRead = useCallback(async () => {
+    setNotifications((prev) => {
+      const ts = new Date().toISOString();
+      return prev.map((n) => ({ ...n, readAt: n.readAt ?? ts }));
+    });
+
+    try {
+      await markAllNotificationsRead();
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const value = useMemo(
     () => ({
+      notifications,
       unreadCount,
       loading,
       panelOpen,
-      refreshUnreadCount,
+      refreshNotifications,
       togglePanel: () => setPanelOpen((v) => !v),
+      closePanel: () => setPanelOpen(false),
+      markRead,
+      markAllRead,
     }),
-    [unreadCount, loading, panelOpen, refreshUnreadCount]
+    [notifications, unreadCount, loading, panelOpen, refreshNotifications, markRead, markAllRead]
   );
 
   return <NotificationsContext.Provider value={value}>{children}</NotificationsContext.Provider>;

@@ -156,6 +156,7 @@ const Topbar: React.FC<{ topbarHeight: number }> = ({ topbarHeight }) => {
                 badgeContent={unreadCount}
                 overlap="circular"
                 invisible={unreadCount <= 0}
+                slotProps={{ badge: { 'data-testid': 'notifications-badge' } }}
               >
                 <NotificationsIcon sx={{ fontSize: '1.25rem' }} />
               </Badge>

@@ -52,7 +52,7 @@
       "Add mark-read endpoint (or stub) + optimistic update.",
       "Empty state + loading state."
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 6,
