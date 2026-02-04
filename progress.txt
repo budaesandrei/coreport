@@ -78,3 +78,48 @@
     -H "X-Workspace-Id: $WORKSPACE"
   # {"canonical_data_language":"ro"}
   ```
+
+- Task 14 (User settings: UI language):
+  - Backend: added `user_settings` table + `UserSetting` ORM model for per-user `ui_language` (defaulted from workspace `canonical_data_language` on first access).
+  - API:
+    - `GET /api/v1/user_settings` returns current user's settings (auto-creates row)
+    - `PATCH/PUT /api/v1/user_settings` updates `ui_language`
+  - Frontend: added User Settings page at `/settings/user` and a link under the avatar menu.
+  - Playwright: added `user-settings-ui-language.spec.ts` (register → open avatar menu → change ui_language → reload → assert persisted). Screenshot saved at `artifacts/task-14-user-settings-ui-language.png`.
+
+  Curl proof:
+  ```bash
+  WORKSPACE=e2e-curl-<ts>
+  EMAIL=$WORKSPACE@example.com
+  PASS='Password123!'
+
+  TOKEN=$(curl -s -X POST http://127.0.0.1:8000/api/v1/auth/register \
+    -H 'Content-Type: application/json' \
+    -H "X-Workspace-Id: $WORKSPACE" \
+    -d "{\"workspace_name\":\"$WORKSPACE\",\"email\":\"$EMAIL\",\"password\":\"$PASS\"}" \
+    | python3 -c "import sys, json; print(json.load(sys.stdin)['access_token'])")
+
+  curl -s -X PATCH http://127.0.0.1:8000/api/v1/workspace_settings \
+    -H "Authorization: Bearer $TOKEN" \
+    -H "X-Workspace-Id: $WORKSPACE" \
+    -H 'Content-Type: application/json' \
+    -d '{"canonical_data_language":"fr"}'
+  # {"canonical_data_language":"fr"}
+
+  curl -s http://127.0.0.1:8000/api/v1/user_settings \
+    -H "Authorization: Bearer $TOKEN" \
+    -H "X-Workspace-Id: $WORKSPACE"
+  # {"ui_language":"fr"}
+
+  curl -s -X PATCH http://127.0.0.1:8000/api/v1/user_settings \
+    -H "Authorization: Bearer $TOKEN" \
+    -H "X-Workspace-Id: $WORKSPACE" \
+    -H 'Content-Type: application/json' \
+    -d '{"ui_language":"ro"}'
+  # {"ui_language":"ro"}
+
+  curl -s http://127.0.0.1:8000/api/v1/user_settings \
+    -H "Authorization: Bearer $TOKEN" \
+    -H "X-Workspace-Id: $WORKSPACE"
+  # {"ui_language":"ro"}
+  ```
