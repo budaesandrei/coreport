@@ -5,9 +5,7 @@ import contextvars
 _workspace_id_var: contextvars.ContextVar[str] = contextvars.ContextVar(
     "workspace_id", default="default"
 )
-_user_name_var: contextvars.ContextVar[str] = contextvars.ContextVar(
-    "user_name", default="System"
-)
+_user_name_var: contextvars.ContextVar[str] = contextvars.ContextVar("user_name", default="System")
 
 
 def set_current_workspace_id(workspace_id: str | None) -> None:

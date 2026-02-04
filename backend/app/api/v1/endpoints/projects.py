@@ -13,7 +13,9 @@ router = APIRouter(prefix="/projects", tags=["Projects"])
 
 
 @router.post("/resolve", response_model=ProjectInfoOut)
-async def resolve_project(payload: ProjectResolveRequest, db: AsyncSession = Depends(get_db)) -> ProjectInfoOut:
+async def resolve_project(
+    payload: ProjectResolveRequest, db: AsyncSession = Depends(get_db)
+) -> ProjectInfoOut:
     """Resolve (or create) a Workspace (aka project)."""
 
     name = payload.name.strip()
@@ -26,7 +28,9 @@ async def resolve_project(payload: ProjectResolveRequest, db: AsyncSession = Dep
             existing.name = name
             await db.commit()
             await db.refresh(existing)
-        return ProjectInfoOut(id=existing.id, name=existing.name, slug=existing.slug, status=str(existing.status))
+        return ProjectInfoOut(
+            id=existing.id, name=existing.name, slug=existing.slug, status=str(existing.status)
+        )
 
     item = Project(name=name, slug=slug, status="active", created_by="system", updated_by="system")
     db.add(item)

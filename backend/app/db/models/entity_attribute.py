@@ -32,9 +32,7 @@ class EntityAttribute(Base):
     required = Column(Boolean, nullable=False, default=False)
     attribute_order = Column(Integer, nullable=False, default=0)
 
-    created_at = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     created_by = Column(String(50), nullable=False, default="system")
     updated_at = Column(
         DateTime(timezone=True),

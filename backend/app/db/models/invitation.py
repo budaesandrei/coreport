@@ -22,9 +22,7 @@ class Invitation(Base):
     accepted_at = Column(DateTime(timezone=True), nullable=True)
     meta_info = Column(JSON, nullable=True)
 
-    created_at = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     created_by = Column(String(50), nullable=False, default="system")
     updated_at = Column(
         DateTime(timezone=True),

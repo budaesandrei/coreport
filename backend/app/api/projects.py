@@ -125,9 +125,7 @@ async def register_project(
     await db.commit()
 
     # Send email
-    send_registration_email(
-        payload.email, payload.first_name, payload.project_name, invite_token
-    )
+    send_registration_email(payload.email, payload.first_name, payload.project_name, invite_token)
 
     await db.refresh(project)
     return project

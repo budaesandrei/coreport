@@ -22,11 +22,15 @@ class EntityType(Base):
     deleted_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     deleted_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
-    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
     created_by: Mapped[str] = mapped_column(String(255), nullable=False, default="system")
     updated_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
     )
     updated_by: Mapped[str] = mapped_column(String(255), nullable=False, default="system")
 
-    __table_args__ = (UniqueConstraint("workspace_id", "name", name="uq_entity_types_workspace_name"),)
+    __table_args__ = (
+        UniqueConstraint("workspace_id", "name", name="uq_entity_types_workspace_name"),
+    )

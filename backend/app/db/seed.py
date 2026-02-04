@@ -13,6 +13,8 @@ from app.models.entity_assignment import EntityAssignment, EntityAssignmentRole
 from app.models.report_package import ReportPackage
 from app.models.report_type import ReportType
 from app.models.user import User
+from app.models.workspace_membership import WorkspaceMembership
+from app.schemas.enums import WorkspaceRole
 from app.services.auth import hash_password
 
 
@@ -24,6 +26,12 @@ async def _seed() -> None:
     dev_email = "alice@example.com"
     dev_password = "dev-password"
 
+    bob_email = "bob@example.com"
+    bob_password = "dev-password"
+
+    carol_email = "carol@example.com"
+    carol_password = "dev-password"
+
     async with SessionLocal() as db:
         # Workspace
         res = await db.execute(select(Workspace).where(Workspace.slug == "default"))
@@ -31,14 +39,22 @@ async def _seed() -> None:
             db.add(Workspace(name="Default Workspace", slug="default"))
             await db.flush()
 
-        # Local auth user (dev): alice@example.com / dev-password
-        res = await db.execute(
-            select(AuthUser).where(AuthUser.workspace_id == "default", AuthUser.email == dev_email)
-        )
-        if not res.scalars().first():
-            db.add(AuthUser(email=dev_email, password_hash=hash_password(dev_password)))
+        # Local auth users (dev)
+        # alice@example.com / dev-password (admin)
+        # bob@example.com / dev-password (non-admin)
+        # carol@example.com / dev-password (non-admin)
+        for email, password in [
+            (dev_email, dev_password),
+            (bob_email, bob_password),
+            (carol_email, carol_password),
+        ]:
+            res = await db.execute(
+                select(AuthUser).where(AuthUser.workspace_id == "default", AuthUser.email == email)
+            )
+            if not res.scalars().first():
+                db.add(AuthUser(email=email, password_hash=hash_password(password)))
 
-        # App users
+        # App users (legacy table used by some endpoints)
         res = await db.execute(select(User).where(User.workspace_id == "default"))
         if not res.scalars().first():
             db.add_all(
@@ -49,11 +65,43 @@ async def _seed() -> None:
                 ]
             )
 
+        # Workspace memberships (new enforcement layer)
+        auth_users = (
+            (
+                await db.execute(
+                    select(AuthUser).where(AuthUser.workspace_id == "default").order_by(AuthUser.id)
+                )
+            )
+            .scalars()
+            .all()
+        )
+        by_email = {u.email: u for u in auth_users}
+
+        desired = [
+            (dev_email, WorkspaceRole.admin),
+            (bob_email, WorkspaceRole.submitter),
+            (carol_email, WorkspaceRole.approver),
+        ]
+        for email, role in desired:
+            au = by_email.get(email)
+            if not au:
+                continue
+            res = await db.execute(
+                select(WorkspaceMembership).where(
+                    WorkspaceMembership.workspace_id == "default",
+                    WorkspaceMembership.auth_user_id == au.id,
+                )
+            )
+            if not res.scalars().first():
+                db.add(WorkspaceMembership(auth_user_id=au.id, role=role))
+
         # Entity Types
         from app.models.entity_type import EntityType
 
         res = await db.execute(
-            select(EntityType).where(EntityType.workspace_id == "default", EntityType.is_deleted == False)
+            select(EntityType).where(
+                EntityType.workspace_id == "default", EntityType.is_deleted == False
+            )
         )
         if not res.scalars().first():
             db.add_all(
@@ -80,10 +128,20 @@ async def _seed() -> None:
             )
 
         # Entity assignments (per entity)
-        res = await db.execute(select(EntityAssignment).where(EntityAssignment.workspace_id == "default"))
+        res = await db.execute(
+            select(EntityAssignment).where(EntityAssignment.workspace_id == "default")
+        )
         if not res.scalars().first():
-            users = (await db.execute(select(User).where(User.workspace_id == "default"))).scalars().all()
-            entities = (await db.execute(select(Entity).where(Entity.workspace_id == "default"))).scalars().all()
+            users = (
+                (await db.execute(select(User).where(User.workspace_id == "default")))
+                .scalars()
+                .all()
+            )
+            entities = (
+                (await db.execute(select(Entity).where(Entity.workspace_id == "default")))
+                .scalars()
+                .all()
+            )
 
             by_name = {u.user_name: u for u in users}
             submitter = by_name.get("bob")
@@ -123,7 +181,12 @@ async def _seed() -> None:
         if not res.scalars().first():
             db.add_all(
                 [
-                    ReportType(code="rent_roll", name="Rent Roll", entity_type="property", report_package_id=pkg.id),
+                    ReportType(
+                        code="rent_roll",
+                        name="Rent Roll",
+                        entity_type="property",
+                        report_package_id=pkg.id,
+                    ),
                     ReportType(
                         code="general_ledger",
                         name="General Ledger",

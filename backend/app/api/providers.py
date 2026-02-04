@@ -82,9 +82,7 @@ async def create_provider(
     existing_provider = result.scalar_one_or_none()
 
     if existing_provider:
-        raise HTTPException(
-            status_code=400, detail="Provider with same name already exists"
-        )
+        raise HTTPException(status_code=400, detail="Provider with same name already exists")
 
     new_provider = Provider(
         name=payload.name,
@@ -118,7 +116,7 @@ async def update_provider(
 
     result = await db.execute(
         select(Provider).where(
-            Provider.id == provider_id, 
+            Provider.id == provider_id,
             Provider.project_id == current_user.project_id,
             Provider.is_deleted == False,
         )
@@ -139,9 +137,7 @@ async def update_provider(
     existing_provider_with_same_name = result.scalar_one_or_none()
 
     if existing_provider_with_same_name:
-        raise HTTPException(
-            status_code=400, detail="Provider with same name already exists"
-        )
+        raise HTTPException(status_code=400, detail="Provider with same name already exists")
 
     existing_provider.name = payload.name
     if payload.description:
@@ -170,7 +166,7 @@ async def delete_provider(
 
     result = await db.execute(
         select(Provider).where(
-            Provider.id == provider_id, 
+            Provider.id == provider_id,
             Provider.project_id == current_user.project_id,
             Provider.is_deleted == False,
         )

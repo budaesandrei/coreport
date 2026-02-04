@@ -35,7 +35,9 @@ async def resolve_workspace(
             status=str(existing.status),
         )
 
-    item = Workspace(name=name, slug=slug, status="active", created_by="system", updated_by="system")
+    item = Workspace(
+        name=name, slug=slug, status="active", created_by="system", updated_by="system"
+    )
     db.add(item)
     await db.commit()
     await db.refresh(item)

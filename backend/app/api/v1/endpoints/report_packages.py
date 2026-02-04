@@ -16,7 +16,9 @@ router = APIRouter()
 async def list_report_packages(db: AsyncSession = Depends(get_db)) -> list[ReportPackage]:
     workspace_id = get_current_workspace_id()
     res = await db.execute(
-        select(ReportPackage).where(ReportPackage.workspace_id == workspace_id).order_by(ReportPackage.id)
+        select(ReportPackage)
+        .where(ReportPackage.workspace_id == workspace_id)
+        .order_by(ReportPackage.id)
     )
     return list(res.scalars().all())
 

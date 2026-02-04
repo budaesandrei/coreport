@@ -6,7 +6,9 @@ from email.message import EmailMessage
 from app.core.config import settings
 
 
-def send_email(*, to_email: str, subject: str, text_body: str, html_body: str | None = None) -> dict:
+def send_email(
+    *, to_email: str, subject: str, text_body: str, html_body: str | None = None
+) -> dict:
     """Send an email via configured SMTP (dev uses MailHog).
 
     Returns a small payload useful for debugging/tests.

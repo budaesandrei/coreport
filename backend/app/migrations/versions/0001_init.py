@@ -1,7 +1,7 @@
 """init
 
 Revision ID: 0001_init
-Revises: 
+Revises:
 Create Date: 2026-02-03
 
 """
@@ -22,9 +22,13 @@ def _meta_cols() -> list[sa.Column]:
     return [
         sa.Column("tenant_id", sa.String(length=64), nullable=False),
         sa.Column("insert_by", sa.String(length=255), nullable=False),
-        sa.Column("insert_dt", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
+        sa.Column(
+            "insert_dt", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False
+        ),
         sa.Column("update_by", sa.String(length=255), nullable=False),
-        sa.Column("update_dt", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
+        sa.Column(
+            "update_dt", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False
+        ),
     ]
 
 

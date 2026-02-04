@@ -28,10 +28,18 @@ def upgrade() -> None:
         sa.Column("is_deleted", sa.Boolean(), nullable=False, server_default=sa.text("false")),
         sa.Column("deleted_at", sa.DateTime(timezone=True), nullable=True),
         sa.Column("deleted_by", sa.String(length=255), nullable=True),
-        sa.Column("created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
-        sa.Column("created_by", sa.String(length=255), nullable=False, server_default=sa.text("'system'")),
-        sa.Column("updated_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
-        sa.Column("updated_by", sa.String(length=255), nullable=False, server_default=sa.text("'system'")),
+        sa.Column(
+            "created_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False
+        ),
+        sa.Column(
+            "created_by", sa.String(length=255), nullable=False, server_default=sa.text("'system'")
+        ),
+        sa.Column(
+            "updated_at", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False
+        ),
+        sa.Column(
+            "updated_by", sa.String(length=255), nullable=False, server_default=sa.text("'system'")
+        ),
         sa.UniqueConstraint("workspace_id", "name", name="uq_entity_types_workspace_name"),
     )
 

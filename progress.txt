@@ -12,4 +12,20 @@
 - Task 4 (Notifications badge): added NotificationsContext + topbar badge and Playwright spec/screenshot.
 - Task 6 (Logout): added avatar menu + Logout action; clears token/workspace in localStorage, notifies auth change, navigates to /login. Verified: `sudo docker compose up -d --build` (frontend Dockerfile now uses pnpm), Playwright tests passed (incl. new logout spec), screenshot saved at `artifacts/task-6-logout.png`.
 - Task 5 (Notifications drawer): implemented right-side notifications drawer opened from topbar bell, with empty state + list items + mark read + mark all read (client-side optimistic stub, structured API wrappers). Verified: `sudo docker compose up -d --build`, `pnpm exec playwright test` (added `notifications-drawer.spec.ts`), screenshot saved at `artifacts/task-5-notifications-drawer.png`.
-- Task 3 (Collapsed sidebar accessibility): added aria-labels for each nav item, ensured visible focus ring in collapsed icon-only mode, verified keyboard tab navigation, and added Playwright spec that collapses sidebar + checks aria-labels + tooltip hover. Verified: `sudo docker compose up -d --build`, `pnpm exec playwright test`, screenshot saved at `artifacts/task-3-sidebar-a11y.png`. 
+- Task 3 (Collapsed sidebar accessibility): added aria-labels for each nav item, ensured visible focus ring in collapsed icon-only mode, verified keyboard tab navigation, and added Playwright spec that collapses sidebar + checks aria-labels + tooltip hover. Verified: `sudo docker compose up -d --build`, `pnpm exec playwright test`, screenshot saved at `artifacts/task-3-sidebar-a11y.png`.
+- Task 12 (Users: Workspace memberships + roles): added `workspace_memberships` table + `WorkspaceRole` enum (admin/submitter/approver/viewer). Enforced admin-only access for `POST /api/v1/users/admin-create` based on membership role. Seed now creates auth users + memberships for alice(admin), bob(submitter), carol(approver). Verified: `sudo docker compose up -d --build`, `alembic upgrade head`, `python -m app.db.seed`, `pytest`.
+
+  Curl proof (bob is non-admin):
+  ```bash
+  TOKEN=$(curl -s -X POST http://localhost:8000/api/v1/auth/login \
+    -H 'Content-Type: application/json' \
+    -d '{"workspace_slug":"default","email":"bob@example.com","password":"dev-password"}' | jq -r .access_token)
+
+  curl -i -X POST http://localhost:8000/api/v1/users/admin-create \
+    -H "Authorization: Bearer $TOKEN" \
+    -H 'Content-Type: application/json' \
+    -d '{"email":"mallory@example.com","role":"viewer"}'
+
+  # HTTP/1.1 403
+  # {"detail":"Admin privileges required"}
+  ```

@@ -42,5 +42,6 @@ settings = Settings()
 # Back-compat for imported legacy code from coreport-project.
 # We'll remove this once the legacy modules are fully migrated to the new config style.
 
+
 def get_settings() -> Settings:  # pragma: no cover
     return settings

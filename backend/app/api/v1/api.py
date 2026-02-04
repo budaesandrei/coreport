@@ -29,10 +29,14 @@ api_router.include_router(entity_types.router)
 
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(entities.router, prefix="/entities", tags=["entities"])
-api_router.include_router(report_packages.router, prefix="/report-packages", tags=["report-packages"])
+api_router.include_router(
+    report_packages.router, prefix="/report-packages", tags=["report-packages"]
+)
 api_router.include_router(report_types.router, prefix="/report-types", tags=["report-types"])
 api_router.include_router(schedules.router, prefix="/schedules", tags=["schedules"])
-api_router.include_router(submission_periods.router, prefix="/submission-periods", tags=["submission-periods"])
+api_router.include_router(
+    submission_periods.router, prefix="/submission-periods", tags=["submission-periods"]
+)
 api_router.include_router(uploads.router, prefix="/uploads", tags=["uploads"])
 api_router.include_router(mappings.router, prefix="/mappings", tags=["mappings"])
 api_router.include_router(submissions.router, prefix="/submissions", tags=["submissions"])

@@ -36,9 +36,13 @@ def upgrade() -> None:
         ),
         sa.Column("active", sa.Boolean(), nullable=False, server_default=sa.text("true")),
         sa.Column("insert_by", sa.String(length=255), nullable=False),
-        sa.Column("insert_dt", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
+        sa.Column(
+            "insert_dt", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False
+        ),
         sa.Column("update_by", sa.String(length=255), nullable=False),
-        sa.Column("update_dt", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False),
+        sa.Column(
+            "update_dt", sa.DateTime(timezone=True), server_default=sa.func.now(), nullable=False
+        ),
         sa.ForeignKeyConstraint(["entity_id"], ["entities.id"], ondelete="CASCADE"),
         sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
     )
@@ -60,8 +64,12 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    op.drop_index("ix_entity_assignments_workspace_user_role_active", table_name="entity_assignments")
-    op.drop_index("ix_entity_assignments_workspace_entity_role_active", table_name="entity_assignments")
+    op.drop_index(
+        "ix_entity_assignments_workspace_user_role_active", table_name="entity_assignments"
+    )
+    op.drop_index(
+        "ix_entity_assignments_workspace_entity_role_active", table_name="entity_assignments"
+    )
     op.drop_index("ix_entity_assignments_user_id", table_name="entity_assignments")
     op.drop_index("ix_entity_assignments_entity_id", table_name="entity_assignments")
     op.drop_index("ix_entity_assignments_workspace_id", table_name="entity_assignments")
