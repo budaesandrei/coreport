@@ -32,7 +32,7 @@
 
 - Task 7 (Theme: Improve dark mode styling): improved dark palette tokens + action states; added component overrides (Paper/Card borders, Drawer sidebar surface + border, ListItemButton selected states, OutlinedInput focus/hover). Updated Home page to render a Paper surface for clearer dark-mode surfaces. Verified: `sudo docker compose up -d --build`, Playwright spec `dark-mode-render.spec.ts` added + passed; screenshot saved at `artifacts/task-7-dark-mode.png`.
 
-- Task 8 (Theme: Add System mode): added theme mode selector (Light/Dark/System) in topbar; System mode resolves via `prefers-color-scheme` and reacts to changes; preference persisted in localStorage. Verified: `sudo docker compose up -d --build`, `pnpm -C frontend exec playwright test` (added `theme-system-mode.spec.ts` proving persistence across reload and respects Playwright media emulation); screenshot saved at `artifacts/task-8-theme-system-mode.png`.
+- Task 8 (Theme: Add System mode) (redo): added theme mode selector (Light/Dark/System) in topbar; System mode resolves via `prefers-color-scheme` and reacts to changes; preference persisted in localStorage (`coreport-theme-mode`). Verified: `sudo docker compose up -d --build`, `pnpm -C frontend exec playwright test` (added `theme-system-mode.spec.ts` proving persistence + follows Playwright media emulation); screenshot saved at `artifacts/task-8-theme-system-mode.png`.
 
 - Task 1 (UX: Mobile-friendly shell): made layout responsive — sidebar becomes a temporary overlay drawer on mobile (opened via hamburger in topbar), content uses full-width spacing at ~360px, and topbar elements collapse appropriately. Verified: `sudo docker compose up -d --build`, `pnpm -C frontend exec playwright test` (added `mobile-shell.spec.ts`).
 
