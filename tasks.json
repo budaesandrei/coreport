@@ -118,7 +118,7 @@
       "Generate temporary password or reset token.",
       "Send email via dev mailer (MailHog)."
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 12,
