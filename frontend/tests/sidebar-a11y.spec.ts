@@ -29,7 +29,7 @@ test('collapsed sidebar has tooltips, aria-labels, and keyboard navigation', asy
 
   // Verify aria-labels exist on a few nav items (used as accessible names when collapsed)
   const home = page.getByRole('button', { name: 'Home' });
-  const workspace = page.getByRole('button', { name: 'Workspace' });
+  const workspace = page.locator('div[role="button"][aria-label="Workspace"]');
   const activity = page.getByRole('button', { name: 'Activity' });
 
   await expect(home).toBeVisible();
