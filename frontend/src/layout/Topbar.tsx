@@ -10,6 +10,7 @@ import {
   Divider,
   TextField,
   InputAdornment,
+  Badge,
 } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SearchIcon from '@mui/icons-material/Search';
@@ -17,11 +18,13 @@ import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { useUser } from '@context/UserContext';
 import { useThemeContext } from '@context/ThemeContext';
+import { useNotifications } from '@context/NotificationsContext';
 import logoDark from '@assets/images/logo_nav.webp';
 
 const Topbar: React.FC<{ topbarHeight: number }> = ({ topbarHeight }) => {
   const { name } = useUser();
   const { mode, toggleTheme } = useThemeContext();
+  const { unreadCount, togglePanel } = useNotifications();
 
   return (
     <AppBar
@@ -110,8 +113,20 @@ const Topbar: React.FC<{ topbarHeight: number }> = ({ topbarHeight }) => {
             </IconButton>
           </Tooltip>
           <Tooltip title="Notifications">
-            <IconButton size="small" edge="end">
-              <NotificationsIcon sx={{ fontSize: '1.25rem' }} />
+            <IconButton
+              size="small"
+              edge="end"
+              aria-label="Notifications"
+              onClick={togglePanel}
+            >
+              <Badge
+                color="error"
+                badgeContent={unreadCount}
+                overlap="circular"
+                invisible={unreadCount <= 0}
+              >
+                <NotificationsIcon sx={{ fontSize: '1.25rem' }} />
+              </Badge>
             </IconButton>
           </Tooltip>
           <Tooltip title={name}>

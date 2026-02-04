@@ -41,7 +41,7 @@
       "Render badge on icon button.",
       "Add click handler to open notifications panel."
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 5,
