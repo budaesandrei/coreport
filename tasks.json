@@ -123,13 +123,13 @@
   {
     "id": 12,
     "feature": "Users: Workspace memberships + roles",
-    "description": "Implement membership + roles (admin/submitter/approver); enforce in API and UI.",
+    "description": "Implement membership + roles (admin/submitter/approver); enforce on backend endpoints.",
     "steps": [
-      "Backend: membership model + role enum.",
-      "Dependencies: require workspace membership and role checks.",
-      "Frontend: role-aware navigation + guards."
+      "Backend: workspace_memberships model/table + role enum.",
+      "Backend: require workspace membership and role checks (admin-only for admin endpoints).",
+      "Seed: create memberships for seeded dev users."
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 13,

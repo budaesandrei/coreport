@@ -15,12 +15,16 @@ router = APIRouter()
 @router.get("/", response_model=list[ReportTypeOut])
 async def list_report_types(db: AsyncSession = Depends(get_db)) -> list[ReportType]:
     workspace_id = get_current_workspace_id()
-    res = await db.execute(select(ReportType).where(ReportType.workspace_id == workspace_id).order_by(ReportType.id))
+    res = await db.execute(
+        select(ReportType).where(ReportType.workspace_id == workspace_id).order_by(ReportType.id)
+    )
     return list(res.scalars().all())
 
 
 @router.post("/", response_model=ReportTypeOut)
-async def create_report_type(payload: ReportTypeCreate, db: AsyncSession = Depends(get_db)) -> ReportType:
+async def create_report_type(
+    payload: ReportTypeCreate, db: AsyncSession = Depends(get_db)
+) -> ReportType:
     item = ReportType(
         code=payload.code,
         name=payload.name,

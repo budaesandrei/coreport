@@ -23,12 +23,16 @@ MAX_BYTES = 10 * 1024 * 1024
 @router.get("/", response_model=list[UploadJobOut])
 async def list_uploads(db: AsyncSession = Depends(get_db)) -> list[UploadJob]:
     workspace_id = get_current_workspace_id()
-    res = await db.execute(select(UploadJob).where(UploadJob.workspace_id == workspace_id).order_by(UploadJob.id))
+    res = await db.execute(
+        select(UploadJob).where(UploadJob.workspace_id == workspace_id).order_by(UploadJob.id)
+    )
     return list(res.scalars().all())
 
 
 @router.post("/", response_model=UploadJobOut)
-async def create_upload(file: UploadFile = File(...), db: AsyncSession = Depends(get_db)) -> UploadJob:
+async def create_upload(
+    file: UploadFile = File(...), db: AsyncSession = Depends(get_db)
+) -> UploadJob:
     storage = ensure_storage_dir()
     data = await file.read()
     if len(data) > MAX_BYTES:
@@ -72,7 +76,9 @@ async def create_upload_from_url(url: str, db: AsyncSession = Depends(get_db)) -
 
 
 @router.post("/{upload_id}/propose-mapping", response_model=ProposedMapping)
-async def propose_mapping_for_upload(upload_id: int, db: AsyncSession = Depends(get_db)) -> ProposedMapping:
+async def propose_mapping_for_upload(
+    upload_id: int, db: AsyncSession = Depends(get_db)
+) -> ProposedMapping:
     workspace_id = get_current_workspace_id()
     res = await db.execute(
         select(UploadJob).where(UploadJob.workspace_id == workspace_id, UploadJob.id == upload_id)
@@ -96,4 +102,8 @@ async def propose_mapping_for_upload(upload_id: int, db: AsyncSession = Depends(
     }
     file_context = {"file_name": job.file_name, "headers": []}
     proposed = await propose_mapping(report_schema, file_context)
-    return ProposedMapping(mapping_spec=proposed.mapping_spec, confidence=proposed.confidence, warnings=proposed.warnings)
+    return ProposedMapping(
+        mapping_spec=proposed.mapping_spec,
+        confidence=proposed.confidence,
+        warnings=proposed.warnings,
+    )

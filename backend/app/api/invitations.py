@@ -41,9 +41,7 @@ async def get_invitation_by_token(
         if invitation.invitation_type == InvitationType.INVITE:
             raise HTTPException(status_code=409, detail="Invitation already accepted.")
         elif invitation.invitation_type == InvitationType.PROJECT_REGISTRATION:
-            raise HTTPException(
-                status_code=409, detail="Project registration already completed."
-            )
+            raise HTTPException(status_code=409, detail="Project registration already completed.")
 
     return invitation
 
@@ -70,9 +68,7 @@ async def accept_invitation(
         if invitation.invitation_type == InvitationType.INVITE:
             raise HTTPException(status_code=409, detail="Invitation already accepted.")
         elif invitation.invitation_type == InvitationType.PROJECT_REGISTRATION:
-            raise HTTPException(
-                status_code=409, detail="Project registration already completed."
-            )
+            raise HTTPException(status_code=409, detail="Project registration already completed.")
 
     invitation.accepted_at = datetime.now(timezone.utc)
     invitation.updated_by = decoded["sub"]

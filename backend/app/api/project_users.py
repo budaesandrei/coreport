@@ -97,9 +97,7 @@ async def create_project_user(
     if not payload.email or payload.email == "":
         raise HTTPException(status_code=400, detail="Email is required")
 
-    result = await db.execute(
-        select(User).where(func.lower(User.email) == payload.email.lower())
-    )
+    result = await db.execute(select(User).where(func.lower(User.email) == payload.email.lower()))
     user = result.scalars().first()
 
     if not user:
@@ -123,9 +121,7 @@ async def create_project_user(
     existing_project_user = result.scalars().first()
 
     if existing_project_user:
-        raise HTTPException(
-            status_code=400, detail="User already exists in current project"
-        )
+        raise HTTPException(status_code=400, detail="User already exists in current project")
 
     project_user = ProjectUser(
         user_id=user.id,
@@ -163,9 +159,7 @@ async def create_project_user(
 
     await db.commit()
 
-    result = await db.execute(
-        select(Project).where(Project.id == current_user.project_id)
-    )
+    result = await db.execute(select(Project).where(Project.id == current_user.project_id))
     project = result.scalar_one_or_none()
 
     if not project:

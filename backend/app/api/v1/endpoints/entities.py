@@ -15,7 +15,9 @@ router = APIRouter()
 @router.get("/", response_model=list[EntityOut])
 async def list_entities(db: AsyncSession = Depends(get_db)) -> list[Entity]:
     workspace_id = get_current_workspace_id()
-    res = await db.execute(select(Entity).where(Entity.workspace_id == workspace_id).order_by(Entity.id))
+    res = await db.execute(
+        select(Entity).where(Entity.workspace_id == workspace_id).order_by(Entity.id)
+    )
     return list(res.scalars().all())
 
 

@@ -30,9 +30,7 @@ class EntityType(Base):
     )
     deleted_by = Column(String(50), nullable=True)
 
-    created_at = Column(
-        DateTime(timezone=True), server_default=func.now(), nullable=False
-    )
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     created_by = Column(String(50), nullable=False, default="system")
     updated_at = Column(
         DateTime(timezone=True),
@@ -42,6 +40,4 @@ class EntityType(Base):
     )
     updated_by = Column(String(50), nullable=False, default="system")
 
-    __table_args__ = (
-        UniqueConstraint("project_id", "name", name="uq_entitytype_project_name"),
-    )
+    __table_args__ = (UniqueConstraint("project_id", "name", name="uq_entitytype_project_name"),)

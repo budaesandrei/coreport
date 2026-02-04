@@ -35,7 +35,11 @@ async def propose_mapping(report_schema: dict, file_context: dict) -> ProposedMa
                 mapping[key] = {"type": "column", "columnIndex": idx}
             except ValueError:
                 mapping[key] = {"type": "constant", "value": None}
-        return ProposedMapping(mapping_spec=mapping, confidence=0.2, warnings=["OPENAI_API_KEY missing; used heuristic mapping"])
+        return ProposedMapping(
+            mapping_spec=mapping,
+            confidence=0.2,
+            warnings=["OPENAI_API_KEY missing; used heuristic mapping"],
+        )
 
     client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
 

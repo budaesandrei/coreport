@@ -68,10 +68,10 @@ async def create_entity_type(
         raise HTTPException(
             status_code=403, detail="You are not authorized to access this resource"
         )
-    
+
     if not payload.name or payload.name == "":
         raise HTTPException(status_code=400, detail="Entity type name is required")
-    
+
     result = await db.execute(
         select(EntityType).where(
             func.lower(func.trim(EntityType.name)) == payload.name.strip().lower(),
@@ -80,12 +80,10 @@ async def create_entity_type(
         )
     )
     existing_entity_type = result.scalar_one_or_none()
-    
+
     if existing_entity_type:
-        raise HTTPException(
-            status_code=400, detail="Entity type with same name already exists"
-        )
-    
+        raise HTTPException(status_code=400, detail="Entity type with same name already exists")
+
     new_entity_type = EntityType(
         name=payload.name,
         description=payload.description,
@@ -93,11 +91,11 @@ async def create_entity_type(
         created_by=current_user.email,
         updated_by=current_user.email,
     )
-    
+
     db.add(new_entity_type)
     await db.commit()
     await db.refresh(new_entity_type)
-    
+
     return new_entity_type
 
 
@@ -115,7 +113,7 @@ async def update_entity_type(
 
     if not payload.name or payload.name == "":
         raise HTTPException(status_code=400, detail="Entity type name is required")
-    
+
     result = await db.execute(
         select(EntityType).where(
             EntityType.id == entity_type_id,
@@ -124,10 +122,10 @@ async def update_entity_type(
         )
     )
     existing_entity_type = result.scalar_one_or_none()
-    
+
     if not existing_entity_type:
         raise HTTPException(status_code=404, detail="Entity type not found")
-    
+
     result = await db.execute(
         select(EntityType).where(
             func.lower(func.trim(EntityType.name)) == payload.name.strip().lower(),
@@ -137,23 +135,21 @@ async def update_entity_type(
         )
     )
     existing_entity_type_with_same_name = result.scalar_one_or_none()
-    
+
     if existing_entity_type_with_same_name:
-        raise HTTPException(
-            status_code=400, detail="Entity type with same name already exists"
-        )
-    
+        raise HTTPException(status_code=400, detail="Entity type with same name already exists")
+
     existing_entity_type.name = payload.name
     if payload.description:
         existing_entity_type.description = payload.description
     if payload.is_active is not None:
         existing_entity_type.is_active = payload.is_active
-    
+
     existing_entity_type.updated_by = current_user.email
-    
+
     await db.commit()
     await db.refresh(existing_entity_type)
-    
+
     return existing_entity_type
 
 
@@ -167,7 +163,7 @@ async def delete_entity_type(
         raise HTTPException(
             status_code=403, detail="You are not authorized to access this resource"
         )
-    
+
     result = await db.execute(
         select(EntityType).where(
             EntityType.id == entity_type_id,
@@ -176,14 +172,14 @@ async def delete_entity_type(
         )
     )
     entity_type = result.scalar_one_or_none()
-    
+
     if not entity_type:
         raise HTTPException(status_code=404, detail="Entity type not found")
-    
+
     entity_type.is_deleted = True
     entity_type.is_active = False
     entity_type.deleted_by = current_user.email
-    
+
     await db.commit()
-    
+
     return {"message": "Entity type deleted successfully"}

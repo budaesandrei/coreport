@@ -12,6 +12,7 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 complete_registration_template_path = os.path.join(base_dir, "complete_registration_template.html")
 accept_invitation_template_path = os.path.join(base_dir, "accept_invitation_template.html")
 
+
 def send_registration_email(email: str, first_name: str, project_name: str, token: str):
     subject = "Activate your Coreport Project"
     link = f"{settings.APP_DOMAIN_URL}/complete-registration?token={token}"
@@ -19,9 +20,7 @@ def send_registration_email(email: str, first_name: str, project_name: str, toke
     with open(complete_registration_template_path, "r") as file:
         template = Template(file.read())
 
-    body_html = template.substitute(
-        first_name=first_name, project_name=project_name, link=link
-    )
+    body_html = template.substitute(first_name=first_name, project_name=project_name, link=link)
 
     try:
         ses_client.send_email(
@@ -44,9 +43,7 @@ def send_invite_email(email: str, first_name: str, project_name: str, token: str
     with open(accept_invitation_template_path, "r") as file:
         template = Template(file.read())
 
-    body_html = template.substitute(
-        first_name=first_name, project_name=project_name, link=link
-    )
+    body_html = template.substitute(first_name=first_name, project_name=project_name, link=link)
 
     try:
         ses_client.send_email(

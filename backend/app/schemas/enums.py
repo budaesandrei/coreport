@@ -28,6 +28,14 @@ class ProjectRole(str, Enum):
     VIEWER = "viewer"
 
 
+class WorkspaceRole(str, Enum):
+    # Minimum required roles for task-12.
+    admin = "admin"
+    submitter = "submitter"
+    approver = "approver"
+    viewer = "viewer"
+
+
 class ExpiryPreset(str, Enum):
     ONE_HOUR = "1h"
     SIX_HOURS = "6h"

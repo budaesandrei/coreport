@@ -24,7 +24,9 @@ async def list_entity_types(db: AsyncSession = Depends(get_db)) -> list[EntityTy
 
 
 @router.post("", response_model=EntityTypeOut)
-async def create_entity_type(payload: EntityTypeCreate, db: AsyncSession = Depends(get_db)) -> EntityType:
+async def create_entity_type(
+    payload: EntityTypeCreate, db: AsyncSession = Depends(get_db)
+) -> EntityType:
     workspace_id = get_current_workspace_id()
     user = get_current_user_name()
 
