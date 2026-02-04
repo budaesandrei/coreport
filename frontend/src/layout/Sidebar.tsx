@@ -1,21 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
+  Divider,
   Drawer,
+  IconButton,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Tooltip,
   Typography,
-  Divider,
 } from '@mui/material';
 import Icon from '@mui/material/Icon';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 import { menuItems } from '@constants/menuItems';
 import { useUser } from '@context/UserContext';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-const Sidebar: React.FC<{ sidebarWidth: number }> = ({ sidebarWidth }) => {
+type Props = {
+  sidebarWidth: number;
+  collapsed: boolean;
+  onToggleCollapsed: () => void;
+};
+
+const Sidebar: React.FC<Props> = ({ sidebarWidth, collapsed, onToggleCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { role, allowedPaths } = useUser();
@@ -30,6 +40,11 @@ const Sidebar: React.FC<{ sidebarWidth: number }> = ({ sidebarWidth }) => {
     navigate(path);
   };
 
+  const visibleSections = useMemo(
+    () => menuItems.filter((s) => !(s.role && s.role !== role)),
+    [role]
+  );
+
   return (
     <Drawer
       variant="permanent"
@@ -41,51 +56,89 @@ const Sidebar: React.FC<{ sidebarWidth: number }> = ({ sidebarWidth }) => {
           position: 'relative',
           height: '100%',
           backgroundColor: 'transparent',
-          pl: 0
+          pl: 0,
+          overflowX: 'hidden',
+          transition: (theme) =>
+            theme.transitions.create('width', {
+              duration: 220,
+              easing: 'cubic-bezier(0.2, 0.9, 0.2, 1)', // fast -> slow
+            }),
         },
       }}
     >
       <Box display="flex" flexDirection="column" height="100%">
-        <List>
-          {menuItems.map((section) =>
-            section.role && section.role !== role ? null : (
-              <React.Fragment key={section.label}>
-                {/* Section label */}
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent={collapsed ? 'center' : 'flex-end'}
+          px={collapsed ? 0 : 1}
+          pt={1}
+          pb={0.5}
+        >
+          <Tooltip title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
+            <IconButton size="small" onClick={onToggleCollapsed} aria-label="Toggle sidebar">
+              {collapsed ? (
+                <ChevronRightIcon fontSize="small" />
+              ) : (
+                <ChevronLeftIcon fontSize="small" />
+              )}
+            </IconButton>
+          </Tooltip>
+        </Box>
+
+        <List sx={{ px: collapsed ? 0.5 : 0 }}>
+          {visibleSections.map((section) => (
+            <React.Fragment key={section.label}>
+              {/* Section label */}
+              {!collapsed && (
                 <Divider textAlign="left" sx={{ pt: 1.5, pb: 0.5 }}>
-                  <Typography
-                    variant="subtitle2"
-                    color="text.secondary"
-                  >
+                  <Typography variant="subtitle2" color="text.secondary">
                     {section.label}
                   </Typography>
                 </Divider>
+              )}
 
-                {/* Section items */}
-                {section.children.map((item) =>
-                  allowedPaths.includes(item.path) ? (
-                    <ListItemButton
-                      dense
-                      key={item.label}
-                      onClick={() => handleNavigation(item.path)}
-                      selected={selectedPath === item.path}
-                      sx={{
-                        borderTopRightRadius: 20,
-                        borderBottomRightRadius: 20,
-                      }}
-                    >
-                      {item.icon && (
-                        <ListItemIcon sx={{ minWidth: '40px' }}>
-                          <Icon fontSize="small">{item.icon}</Icon>
-                        </ListItemIcon>
-                      )}
-                      <ListItemText primary={item.label} />
-                    </ListItemButton>
-                  ) : null
-                )}
+              {/* Section items */}
+              {section.children.map((item) => {
+                if (!allowedPaths.includes(item.path)) return null;
 
-              </React.Fragment>
-            )
-          )}
+                const button = (
+                  <ListItemButton
+                    dense
+                    key={item.label}
+                    onClick={() => handleNavigation(item.path)}
+                    selected={selectedPath === item.path}
+                    sx={{
+                      borderTopRightRadius: 20,
+                      borderBottomRightRadius: 20,
+                      justifyContent: collapsed ? 'center' : 'flex-start',
+                      px: collapsed ? 1 : 2,
+                    }}
+                  >
+                    {item.icon && (
+                      <ListItemIcon
+                        sx={{
+                          minWidth: collapsed ? 0 : '40px',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <Icon fontSize="small">{item.icon}</Icon>
+                      </ListItemIcon>
+                    )}
+                    {!collapsed && <ListItemText primary={item.label} />}
+                  </ListItemButton>
+                );
+
+                return collapsed ? (
+                  <Tooltip key={item.label} title={item.label} placement="right">
+                    {button}
+                  </Tooltip>
+                ) : (
+                  button
+                );
+              })}
+            </React.Fragment>
+          ))}
         </List>
       </Box>
     </Drawer>
