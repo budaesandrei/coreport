@@ -4,9 +4,10 @@ import { Box, useTheme } from '@mui/material';
 type ContentProps = {
   topbarHeight: number;
   children: React.ReactNode;
+  insetRadius?: boolean;
 };
 
-const Content: React.FC<ContentProps> = ({ topbarHeight, children }) => {
+const Content: React.FC<ContentProps> = ({ topbarHeight, children, insetRadius = true }) => {
   const theme = useTheme();
 
   return (
@@ -15,8 +16,9 @@ const Content: React.FC<ContentProps> = ({ topbarHeight, children }) => {
         minHeight: `calc(100vh - ${topbarHeight}px)`,
         width: '100%',
         backgroundColor: theme.palette.background.default,
-        borderTopLeftRadius: 10,
-        p: 1,
+        borderTopLeftRadius: insetRadius ? 10 : 0,
+        p: { xs: 1, sm: 1.5 },
+        overflowX: 'hidden',
       }}
     >
       {children}

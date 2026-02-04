@@ -23,9 +23,23 @@ type Props = {
   sidebarWidth: number;
   collapsed: boolean;
   onToggleCollapsed: () => void;
+  variant?: 'permanent' | 'temporary';
+  open?: boolean;
+  onClose?: () => void;
+  onNavigate?: () => void;
+  hideCollapseToggle?: boolean;
 };
 
-const Sidebar: React.FC<Props> = ({ sidebarWidth, collapsed, onToggleCollapsed }) => {
+const Sidebar: React.FC<Props> = ({
+  sidebarWidth,
+  collapsed,
+  onToggleCollapsed,
+  variant = 'permanent',
+  open = true,
+  onClose,
+  onNavigate,
+  hideCollapseToggle = false,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { role, allowedPaths } = useUser();
@@ -38,6 +52,7 @@ const Sidebar: React.FC<Props> = ({ sidebarWidth, collapsed, onToggleCollapsed }
   const handleNavigation = (path: string) => {
     setSelectedPath(path);
     navigate(path);
+    onNavigate?.();
   };
 
   const visibleSections = useMemo(
@@ -47,13 +62,17 @@ const Sidebar: React.FC<Props> = ({ sidebarWidth, collapsed, onToggleCollapsed }
 
   return (
     <Drawer
-      variant="permanent"
+      variant={variant}
+      open={open}
+      onClose={onClose}
+      ModalProps={variant === 'temporary' ? { keepMounted: true } : undefined}
+      slotProps={{ paper: { 'data-testid': 'sidebar-drawer' } }}
       sx={{
         width: sidebarWidth,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
           width: sidebarWidth,
-          position: 'relative',
+          position: variant === 'permanent' ? 'relative' : 'fixed',
           height: '100%',
           pl: 0,
           overflowX: 'hidden',
@@ -66,24 +85,26 @@ const Sidebar: React.FC<Props> = ({ sidebarWidth, collapsed, onToggleCollapsed }
       }}
     >
       <Box display="flex" flexDirection="column" height="100%">
-        <Box
-          display="flex"
-          alignItems="center"
-          justifyContent={collapsed ? 'center' : 'flex-end'}
-          px={collapsed ? 0 : 1}
-          pt={1}
-          pb={0.5}
-        >
-          <Tooltip title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
-            <IconButton size="small" onClick={onToggleCollapsed} aria-label="Toggle sidebar">
-              {collapsed ? (
-                <ChevronRightIcon fontSize="small" />
-              ) : (
-                <ChevronLeftIcon fontSize="small" />
-              )}
-            </IconButton>
-          </Tooltip>
-        </Box>
+        {!hideCollapseToggle && (
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent={collapsed ? 'center' : 'flex-end'}
+            px={collapsed ? 0 : 1}
+            pt={1}
+            pb={0.5}
+          >
+            <Tooltip title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
+              <IconButton size="small" onClick={onToggleCollapsed} aria-label="Toggle sidebar">
+                {collapsed ? (
+                  <ChevronRightIcon fontSize="small" />
+                ) : (
+                  <ChevronLeftIcon fontSize="small" />
+                )}
+              </IconButton>
+            </Tooltip>
+          </Box>
+        )}
 
         <List sx={{ px: collapsed ? 0.5 : 0 }}>
           {visibleSections.map((section) => (
