@@ -18,6 +18,7 @@ from app.api.v1.endpoints import (
     users,
     workspaces,
     workspace_settings,
+    user_settings,
 )
 
 api_router = APIRouter()
@@ -26,6 +27,7 @@ api_router.include_router(auth_stub.router, tags=["auth"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(workspaces.router)
 api_router.include_router(workspace_settings.router)
+api_router.include_router(user_settings.router)
 
 api_router.include_router(entity_types.router)
 

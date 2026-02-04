@@ -8,6 +8,7 @@ import MainLayout from "@layout/MainLayout";
 import Users from "@pages/Admin/Users";
 import ReportTypes from "@pages/Admin/ReportTypes";
 import WorkspaceSettings from "@pages/Admin/WorkspaceSettings";
+import UserSettings from "@pages/UserSettings";
 import ActivityContainer from "@pages/Overview/Activity";
 import Providers from "@pages/Setup/Providers";
 import EntityTypes from "@pages/Setup/EntityTypes";
@@ -41,6 +42,8 @@ const AppRouter = () => {
         <Route path="/admin/users" element={<Users />} />
         <Route path="/admin/report-types" element={<ReportTypes />} />
         <Route path="/admin/workspace-settings" element={<WorkspaceSettings />} />
+
+        <Route path="/settings/user" element={<UserSettings />} />
         <Route path="/admin/groups" element={<PlaceholderPage title="User Groups" />} />
         <Route path="/admin/permissions" element={<PlaceholderPage title="Permissions" />} />
         <Route path="/admin/subscription" element={<PlaceholderPage title="Subscription" />} />

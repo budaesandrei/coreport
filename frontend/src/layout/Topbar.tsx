@@ -27,6 +27,7 @@ import SettingsBrightnessIcon from '@mui/icons-material/SettingsBrightness';
 import CheckIcon from '@mui/icons-material/Check';
 import { useNavigate } from 'react-router-dom';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { useUser } from '@context/UserContext';
 import { useThemeContext, ThemeModePreference } from '@context/ThemeContext';
 import { useNotifications } from '@context/NotificationsContext';
@@ -65,6 +66,11 @@ const Topbar: React.FC<{
   const handleSelectTheme = (mode: ThemeModePreference) => {
     setPreference(mode);
     handleCloseThemeMenu();
+  };
+
+  const handleGoToUserSettings = () => {
+    handleCloseUserMenu();
+    navigate('/settings/user');
   };
 
   const handleLogout = () => {
@@ -244,6 +250,12 @@ const Topbar: React.FC<{
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
+            <MenuItem onClick={handleGoToUserSettings} data-testid="user-settings-menu-item">
+              <ListItemIcon>
+                <SettingsIcon fontSize="small" />
+              </ListItemIcon>
+              User Settings
+            </MenuItem>
             <MenuItem onClick={handleLogout}>
               <ListItemIcon>
                 <LogoutIcon fontSize="small" />
