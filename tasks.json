@@ -74,7 +74,7 @@
       "Tune component overrides (Paper, AppBar, Drawer, Button, TextField).",
       "Verify contrast + focus states in dark mode."
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 8,

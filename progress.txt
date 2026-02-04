@@ -29,3 +29,5 @@
   # HTTP/1.1 403
   # {"detail":"Admin privileges required"}
   ```
+
+- Task 7 (Theme: Improve dark mode styling): improved dark palette tokens + action states; added component overrides (Paper/Card borders, Drawer sidebar surface + border, ListItemButton selected states, OutlinedInput focus/hover). Updated Home page to render a Paper surface for clearer dark-mode surfaces. Verified: `sudo docker compose up -d --build`, Playwright spec `dark-mode-render.spec.ts` added + passed; screenshot saved at `artifacts/task-7-dark-mode.png`.
