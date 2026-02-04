@@ -31,7 +31,6 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { useUser } from '@context/UserContext';
 import { useThemeContext, ThemeModePreference } from '@context/ThemeContext';
 import { useNotifications } from '@context/NotificationsContext';
-import { notifyAuthChanged } from '@hooks/useAuth';
 import logoDark from '@assets/images/logo_nav.webp';
 
 const Topbar: React.FC<{
@@ -39,7 +38,9 @@ const Topbar: React.FC<{
   showNavToggle?: boolean;
   onOpenSidebar?: () => void;
 }> = ({ topbarHeight, showNavToggle = false, onOpenSidebar }) => {
-  const { name } = useUser();
+  const { user, logout } = useUser();
+  const name = user?.name || user?.email || '';
+  const initials = user?.initials || (name ? name.slice(0, 2).toUpperCase() : '?');
   const { preference, resolvedMode, setPreference } = useThemeContext();
   const { unreadCount, togglePanel } = useNotifications();
   const navigate = useNavigate();
@@ -74,19 +75,8 @@ const Topbar: React.FC<{
   };
 
   const handleLogout = () => {
-    // Auth
-    localStorage.removeItem('coreport.token');
-
-    // Workspace context
-    localStorage.removeItem('workspace_id');
-    localStorage.removeItem('workspace_name');
-
-    // Other auth-ish values
-    localStorage.removeItem('invite_token');
-
-    notifyAuthChanged();
     handleCloseUserMenu();
-    navigate('/login', { replace: true });
+    logout();
   };
 
   const themeIcon =
@@ -234,12 +224,8 @@ const Topbar: React.FC<{
           </Tooltip>
           <Tooltip title={name}>
             <IconButton size="small" aria-label="User menu" onClick={handleOpenUserMenu}>
-              <Avatar sx={{ width: 32, height: 32 }}>
-                {name
-                  .split(' ')
-                  .map((n) => n[0])
-                  .join('')
-                  .toUpperCase()}
+              <Avatar sx={{ width: 32, height: 32 }} data-testid="topbar-user-avatar">
+                {initials}
               </Avatar>
             </IconButton>
           </Tooltip>
@@ -250,6 +236,13 @@ const Topbar: React.FC<{
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           >
+            <MenuItem disabled data-testid="user-menu-identity">
+              <ListItemText
+                primary={name || 'Unknown user'}
+                secondary={user?.workspace?.slug ? `Workspace: ${user.workspace.slug}` : undefined}
+              />
+            </MenuItem>
+            <Divider />
             <MenuItem onClick={handleGoToUserSettings} data-testid="user-settings-menu-item">
               <ListItemIcon>
                 <SettingsIcon fontSize="small" />

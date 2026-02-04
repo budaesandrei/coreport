@@ -123,3 +123,10 @@
     -H "X-Workspace-Id: $WORKSPACE"
   # {"ui_language":"ro"}
   ```
+
+## Task 15 - Auth: Wire /me into UI
+- Frontend now calls `GET /api/v1/auth/me` on app boot (after token is set) via `UserProvider` and populates `UserContext` with email/workspace/role/allowedPaths.
+- Topbar avatar/menu now displays user identity from `/me` (email) instead of a hardcoded mock user.
+- If `/me` returns 401, we force logout + redirect to `/login`.
+- Playwright: added `auth-me-topbar.spec.ts` covering (1) login -> Topbar shows initials + email from `/me` and (2) invalid token -> redirects to login.
+- Screenshot saved at `artifacts/task-15-wire-me.png`.

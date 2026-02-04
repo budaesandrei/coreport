@@ -42,7 +42,9 @@ const Sidebar: React.FC<Props> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { role, allowedPaths } = useUser();
+  const { user } = useUser();
+  const role = user?.role ?? 'PROJECT_ADMIN';
+  const allowedPaths = user?.allowedPaths || [];
   const [selectedPath, setSelectedPath] = useState(location.pathname);
 
   useEffect(() => {

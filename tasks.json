@@ -162,7 +162,7 @@
       "Populate user context store.",
       "Update nav + permissions checks."
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 16,
