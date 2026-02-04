@@ -7,3 +7,4 @@
 
 2026-02-04
 - Task 2 (UX: Sidebar collapse) implemented: animated ease-out collapse/expand toggle, icons-only collapsed mode, persisted in localStorage.
+- Task 28 (Assignments per entity): added entity_assignments table + ORM model + seed defaults (bob submitter, carol approver); verified via alembic + psql.

@@ -305,7 +305,7 @@
       "Add migration + indexes.",
       "Define role enum submitter/approver."
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 29,

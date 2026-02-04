@@ -9,6 +9,7 @@ from app.db.session import SessionLocal
 from app.db.models.workspace import Workspace
 from app.models.auth_user import AuthUser
 from app.models.entity import Entity
+from app.models.entity_assignment import EntityAssignment, EntityAssignmentRole
 from app.models.report_package import ReportPackage
 from app.models.report_type import ReportType
 from app.models.user import User
@@ -77,6 +78,38 @@ async def _seed() -> None:
                     Entity(name="Riverside Lofts", entity_type="Property", external_id="PROP-002"),
                 ]
             )
+
+        # Entity assignments (per entity)
+        res = await db.execute(select(EntityAssignment).where(EntityAssignment.workspace_id == "default"))
+        if not res.scalars().first():
+            users = (await db.execute(select(User).where(User.workspace_id == "default"))).scalars().all()
+            entities = (await db.execute(select(Entity).where(Entity.workspace_id == "default"))).scalars().all()
+
+            by_name = {u.user_name: u for u in users}
+            submitter = by_name.get("bob")
+            approver = by_name.get("carol")
+
+            if submitter and approver:
+                db.add_all(
+                    [
+                        EntityAssignment(
+                            entity_id=e.id,
+                            user_id=submitter.id,
+                            role=EntityAssignmentRole.submitter,
+                            active=True,
+                        )
+                        for e in entities
+                    ]
+                    + [
+                        EntityAssignment(
+                            entity_id=e.id,
+                            user_id=approver.id,
+                            role=EntityAssignmentRole.approver,
+                            active=True,
+                        )
+                        for e in entities
+                    ]
+                )
 
         # Report package + types
         res = await db.execute(select(ReportPackage).where(ReportPackage.workspace_id == "default"))
