@@ -140,7 +140,7 @@
       "API: get/update settings (admin-only update).",
       "Frontend: settings page UI."
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 14,

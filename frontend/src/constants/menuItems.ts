@@ -112,6 +112,11 @@ export const menuItems: MenuSection[] = [
         icon: "credit_card"
       },
       {
+        label: "Workspace Settings",
+        path: "/admin/workspace-settings",
+        icon: "settings"
+      },
+      {
         label: "Integrations",
         path: "/admin/integrations",
         icon: "electrical_services"
