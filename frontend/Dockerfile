@@ -2,11 +2,13 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# npm is used here because the imported project has a package-lock.json.
-COPY package.json package-lock.json ./
-RUN npm ci
+# Use pnpm (preferred) and the existing pnpm-lock.yaml for reproducible installs.
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 COPY . .
 
 EXPOSE 3000
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]
+CMD ["pnpm", "dev", "--", "--host", "0.0.0.0", "--port", "3000"]

@@ -9,7 +9,7 @@ export default defineConfig({
     viewport: { width: 1200, height: 800 },
   },
   webServer: {
-    command: 'PORT=5173 VITE_E2E_BYPASS_AUTH=1 pnpm dev -- --host 127.0.0.1',
+    command: 'VITE_API_URL=http://127.0.0.1:8000/api/v1 pnpm vite dev --host 127.0.0.1 --port 5173',
     url: 'http://127.0.0.1:5173',
     reuseExistingServer: true,
     timeout: 60_000,

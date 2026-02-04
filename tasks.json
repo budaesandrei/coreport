@@ -63,7 +63,7 @@
       "Clear auth token and workspace_id storage.",
       "Redirect to workspace entry/login."
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 7,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   AppBar,
   Box,
@@ -11,20 +11,52 @@ import {
   TextField,
   InputAdornment,
   Badge,
+  Menu,
+  MenuItem,
+  ListItemIcon,
 } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SearchIcon from '@mui/icons-material/Search';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { useNavigate } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { useUser } from '@context/UserContext';
 import { useThemeContext } from '@context/ThemeContext';
 import { useNotifications } from '@context/NotificationsContext';
+import { notifyAuthChanged } from '@hooks/useAuth';
 import logoDark from '@assets/images/logo_nav.webp';
 
 const Topbar: React.FC<{ topbarHeight: number }> = ({ topbarHeight }) => {
   const { name } = useUser();
   const { mode, toggleTheme } = useThemeContext();
   const { unreadCount, togglePanel } = useNotifications();
+  const navigate = useNavigate();
+
+  const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(null);
+  const userMenuOpen = Boolean(userMenuAnchor);
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setUserMenuAnchor(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => setUserMenuAnchor(null);
+
+  const handleLogout = () => {
+    // Auth
+    localStorage.removeItem('coreport.token');
+
+    // Workspace context
+    localStorage.removeItem('workspace_id');
+    localStorage.removeItem('workspace_name');
+
+    // Other auth-ish values
+    localStorage.removeItem('invite_token');
+
+    notifyAuthChanged();
+    handleCloseUserMenu();
+    navigate('/login', { replace: true });
+  };
 
   return (
     <AppBar
@@ -130,7 +162,7 @@ const Topbar: React.FC<{ topbarHeight: number }> = ({ topbarHeight }) => {
             </IconButton>
           </Tooltip>
           <Tooltip title={name}>
-            <IconButton size="small">
+            <IconButton size="small" aria-label="User menu" onClick={handleOpenUserMenu}>
               <Avatar sx={{ width: 32, height: 32 }}>
                 {name
                   .split(' ')
@@ -140,6 +172,20 @@ const Topbar: React.FC<{ topbarHeight: number }> = ({ topbarHeight }) => {
               </Avatar>
             </IconButton>
           </Tooltip>
+          <Menu
+            anchorEl={userMenuAnchor}
+            open={userMenuOpen}
+            onClose={handleCloseUserMenu}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              Logout
+            </MenuItem>
+          </Menu>
         </Box>
       </Toolbar>
     </AppBar>

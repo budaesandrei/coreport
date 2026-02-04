@@ -10,3 +10,4 @@
 - Task 28 (Assignments per entity): added entity_assignments table + ORM model + seed defaults (bob submitter, carol approver); verified via alembic + psql.
 - Task 11 (Admin create users): added admin-only endpoint to create AuthUser + send invite email via SMTP (MailHog), plus supporting schemas.
 - Task 4 (Notifications badge): added NotificationsContext + topbar badge and Playwright spec/screenshot.
+- Task 6 (Logout): added avatar menu + Logout action; clears token/workspace in localStorage, notifies auth change, navigates to /login. Verified: `sudo docker compose up -d --build` (frontend Dockerfile now uses pnpm), Playwright tests passed (incl. new logout spec), screenshot saved at `artifacts/task-6-logout.png`.
