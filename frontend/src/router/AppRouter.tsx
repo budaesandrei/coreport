@@ -11,7 +11,8 @@ import ActivityContainer from "@pages/Overview/Activity";
 import Providers from "@pages/Setup/Providers";
 import EntityTypes from "@pages/Setup/EntityTypes";
 import PlaceholderPage from "@pages/PlaceholderPage";
-import NewSubmissionWizardPage from "@pages/Submissions/NewSubmissionWizardPage";
+import NewSubmissionWizard from "@pages/Submissions/NewSubmissionWizard";
+import FieldMappingWizard from "@pages/FieldMapping";
 
 const AppRouter = () => {
   return (
@@ -32,9 +33,9 @@ const AppRouter = () => {
         <Route path="/" element={<Home />} />
         <Route path="/workspace" element={<PlaceholderPage title="Workspace" />} />
         <Route path="/activity" element={<ActivityContainer />} />
-        <Route path="/field-mapping" element={<PlaceholderPage title="Field Mapping" />} />
+        <Route path="/field-mapping" element={<FieldMappingWizard />} />
         <Route path="/submissions" element={<PlaceholderPage title="Submissions" />} />
-        <Route path="/submissions/new" element={<NewSubmissionWizardPage />} />
+        <Route path="/submissions/new" element={<NewSubmissionWizard />} />
 
         <Route path="/admin/users" element={<Users />} />
         <Route path="/admin/report-types" element={<ReportTypes />} />
@@ -49,7 +50,10 @@ const AppRouter = () => {
         <Route path="/setup/entity-types" element={<EntityTypes />} />
         <Route path="/setup/entities" element={<PlaceholderPage title="Entities" />} />
         <Route path="/setup/schedules" element={<PlaceholderPage title="Schedules" />} />
-        <Route path="/setup/value-mapping-sets" element={<PlaceholderPage title="Value Mapping Sets" />} />
+        <Route
+          path="/setup/value-mapping-sets"
+          element={<PlaceholderPage title="Value Mapping Sets" />}
+        />
         <Route path="/setup/validation-rules" element={<PlaceholderPage title="Validation Rules" />} />
 
         <Route path="*" element={<PlaceholderPage title="Not Found" />} />
