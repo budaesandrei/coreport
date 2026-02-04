@@ -4,3 +4,29 @@
 - Cleanup: renamed tenant/project/org concepts to workspace-only throughout backend + frontend.
 - DB reset approved: we can drop volumes to simplify destructive schema changes.
 - Hard rule: before telling Dre to check localhost:3000, run a Playwright visual sanity check (no more blind "it should work").
+
+2026-02-04
+- Task 11 (Users: Admin creates accounts):
+  - Backend: added POST /api/v1/users/admin-create (admin-only, dev rule: first registered user in workspace is admin).
+  - Creates AuthUser (email + hashed password) scoped to workspace + a matching User row.
+  - Sends invite email via SMTP (MailHog in docker-compose). Response includes email_debug payload for easy verification.
+
+  Verification:
+    docker compose up -d --build
+
+    # Register the admin user for a workspace (first user becomes admin)
+    curl -sS -X POST http://localhost:8000/api/v1/auth/register \
+      -H 'Content-Type: application/json' \
+      -d '{"workspace_name":"Demo Workspace","email":"admin@example.com","password":"AdminPass123!"}' \
+      | jq -r .access_token > /tmp/admin.token
+
+    # Create a user + trigger invite email
+    curl -sS -X POST http://localhost:8000/api/v1/users/admin-create \
+      -H 'Authorization: Bearer '"$(cat /tmp/admin.token)" \
+      -H 'Content-Type: application/json' \
+      -d '{"email":"john@example.com"}' | jq
+
+    # Check MailHog:
+    open http://localhost:8025
+    # or API:
+    curl -sS http://localhost:8025/api/v2/messages | jq '.items[0].Content.Headers.Subject[0]'

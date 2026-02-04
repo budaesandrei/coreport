@@ -10,6 +10,19 @@ class UserCreate(BaseModel):
     role: str = "VIEWER"
 
 
+class AdminUserCreateIn(BaseModel):
+    email: str
+    password: str | None = None
+    role: str = "VIEWER"
+
+
+class AdminUserCreateOut(BaseModel):
+    email: str
+    role: str
+    email_sent: bool
+    email_debug: dict | None = None
+
+
 class UserOut(ItemBase):
     user_name: str
     role: str
