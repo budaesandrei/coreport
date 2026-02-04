@@ -39,9 +39,10 @@
     "steps": [
       "Wire notification count state (API stub initially).",
       "Render badge on icon button.",
-      "Add click handler to open notifications panel."
+      "Add click handler to open notifications panel.",
+      "Verified via Playwright screenshot: artifacts/task-4-notification-badge.png"
     ],
-    "status": "todo"
+    "status": "done"
   },
   {
     "id": 5,

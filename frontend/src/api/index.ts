@@ -5,3 +5,4 @@ export * from './providers';
 export * from './projectUsers';
 export * from './entityTypes';
 export * from './entityAttributes';
+export * from './notifications';

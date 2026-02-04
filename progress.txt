@@ -1,9 +1,5 @@
-2026-02-03
-- Decision: UI term is "Workspace" (DB concept is tenant). Auth approach for this sprint is Option B: local email+password + JWT + MailHog for dev email.
-- Imported the existing portal UI from coreport-project/dev into coreport/frontend (MUI + router + login flow).
-- Next: implement user-scoped auth (JWT), workspace membership + switcher (X-Tenant-Id per request), and landing-style registration to create first workspace + admin.
-- Added v1 endpoint shims for legacy projects/invitations/entity_types/entity_attributes/providers/project_users routers and wired them into the v1 API router. Verified via a python3 script that the new shims exist and are included in backend/app/api/v1/api.py (docker daemon unavailable in this environment).
-- Updated /api/v1/auth register/login to resolve Project by slug/id and store AuthUser tenant_id as project id; rewired Complete Registration to call local /auth/register, accept invitation, and disable social sign-ins. Verification: docker compose up failed (no Docker socket); ran python3 AST parse on backend/app/api/v1/endpoints/auth.py.
-
 2026-02-04
-- Task 2 (UX: Sidebar collapse) implemented: animated ease-out collapse/expand toggle, icons-only collapsed mode, persisted in localStorage.
+- Task #4: Notifications badge in topbar.
+  - Added notifications state (NotificationsContext) + API stub getUnreadNotificationCount() (returns 3 for now; structured to swap to GET /notifications/unread_count later).
+  - Updated Topbar notifications icon button to render MUI Badge with unread count and click handler (togglePanel placeholder).
+  - Verified via Playwright screenshot: artifacts/task-4-notification-badge.png
