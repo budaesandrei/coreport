@@ -27,7 +27,8 @@ export const MOCK_USER: User = {
     '/admin/permissions',    
     '/admin/subscription',
     '/admin/validation-rules',
-    '/admin/integrations'
+    '/admin/integrations',
+    '/admin/workspace-settings'
   ],
 };
 

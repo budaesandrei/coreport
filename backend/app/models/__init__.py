@@ -12,6 +12,7 @@ from app.models.submission_period import SubmissionPeriod
 from app.models.upload_job import UploadJob
 from app.models.validation_rule import ValidationRule
 from app.models.workspace_membership import WorkspaceMembership
+from app.models.workspace_setting import WorkspaceSetting
 
 # NOTE: We also have a legacy auth+workspace model layer under app.db.models (from coreport-project)
 # which defines a "users" table. To avoid duplicate table definitions in the same MetaData,
@@ -32,4 +33,5 @@ __all__ = [
     "UploadJob",
     "ValidationRule",
     "WorkspaceMembership",
+    "WorkspaceSetting",
 ]
