@@ -55,7 +55,6 @@ const Sidebar: React.FC<Props> = ({ sidebarWidth, collapsed, onToggleCollapsed }
           width: sidebarWidth,
           position: 'relative',
           height: '100%',
-          backgroundColor: 'transparent',
           pl: 0,
           overflowX: 'hidden',
           transition: (theme) =>

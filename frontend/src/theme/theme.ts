@@ -1,4 +1,4 @@
-import { createTheme, ThemeOptions } from "@mui/material/styles";
+import { createTheme, ThemeOptions, alpha } from "@mui/material/styles";
 import { red, grey } from "@mui/material/colors";
 import { Shadows } from "@mui/material/styles/shadows";
 import "@mui/x-data-grid/themeAugmentation";
@@ -37,6 +37,17 @@ const commonThemeOptions: ThemeOptions = {
   },
   shadows,
   components: {
+    MuiCssBaseline: {
+      styleOverrides: (themeParam) => ({
+        body: {
+          backgroundColor: themeParam.palette.background.default,
+        },
+        ":focus-visible": {
+          outline: `2px solid ${alpha(themeParam.palette.primary.main, 0.9)}`,
+          outlineOffset: 2,
+        },
+      }),
+    },
     MuiButton: {
       styleOverrides: {
         root: ({ ownerState, theme }) => {
@@ -68,20 +79,37 @@ const commonThemeOptions: ThemeOptions = {
         },
       },
     },
+    MuiDivider: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderColor: alpha(theme.palette.divider, theme.palette.mode === "dark" ? 0.75 : 0.5),
+        }),
+      },
+    },
     MuiPaper: {
       styleOverrides: {
-        root: {
+        root: ({ theme }) => ({
           borderRadius: 8,
           padding: "1rem",
-        },
+          backgroundImage: "none",
+          border:
+            theme.palette.mode === "dark"
+              ? `1px solid ${alpha(theme.palette.divider, 0.6)}`
+              : `1px solid ${alpha(theme.palette.divider, 0.25)}`,
+        }),
       },
     },
     MuiCard: {
       styleOverrides: {
-        root: {
+        root: ({ theme }) => ({
           borderRadius: 10,
           boxShadow: shadows[2],
-        },
+          backgroundImage: "none",
+          border:
+            theme.palette.mode === "dark"
+              ? `1px solid ${alpha(theme.palette.divider, 0.6)}`
+              : `1px solid ${alpha(theme.palette.divider, 0.25)}`,
+        }),
       },
     },
     MuiAppBar: {
@@ -94,19 +122,86 @@ const commonThemeOptions: ThemeOptions = {
     },
     MuiDrawer: {
       styleOverrides: {
-        paper: {
-          backgroundColor: "transparent",
+        paper: ({ theme }) => ({
+          backgroundColor: theme.palette.background.paper,
+          backgroundImage: "none",
           border: "none",
+          borderRight: `1px solid ${alpha(theme.palette.divider, theme.palette.mode === "dark" ? 0.6 : 0.35)}`,
           boxShadow: "none",
-        },
+        }),
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderRadius: 10,
+          "&.Mui-selected": {
+            backgroundColor: alpha(theme.palette.primary.main, theme.palette.mode === "dark" ? 0.22 : 0.12),
+            "& .MuiListItemIcon-root, & .MuiTypography-root": {
+              color: theme.palette.primary.main,
+            },
+          },
+          "&.Mui-selected:hover": {
+            backgroundColor: alpha(theme.palette.primary.main, theme.palette.mode === "dark" ? 0.28 : 0.16),
+          },
+        }),
       },
     },
     MuiTooltip: {
       styleOverrides: {
-        tooltip: {
+        tooltip: ({ theme }) => ({
           fontSize: "0.75rem",
-          backgroundColor: grey[700],
-        },
+          backgroundColor:
+            theme.palette.mode === "dark"
+              ? alpha(grey[900], 0.92)
+              : alpha(grey[800], 0.92),
+          border: `1px solid ${alpha(theme.palette.divider, 0.4)}`,
+        }),
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          backgroundColor:
+            theme.palette.mode === "dark"
+              ? alpha(theme.palette.common.white, 0.04)
+              : alpha(theme.palette.common.black, 0.02),
+          transition: theme.transitions.create(["border-color", "box-shadow", "background-color"], {
+            duration: theme.transitions.duration.short,
+          }),
+          "&:hover": {
+            backgroundColor:
+              theme.palette.mode === "dark"
+                ? alpha(theme.palette.common.white, 0.06)
+                : alpha(theme.palette.common.black, 0.03),
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: alpha(theme.palette.divider, theme.palette.mode === "dark" ? 0.9 : 0.8),
+            },
+          },
+          "&.Mui-focused": {
+            backgroundColor:
+              theme.palette.mode === "dark"
+                ? alpha(theme.palette.common.white, 0.05)
+                : alpha(theme.palette.common.black, 0.02),
+            boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.25)}`,
+          },
+        }),
+        notchedOutline: ({ theme }) => ({
+          borderColor: alpha(theme.palette.divider, theme.palette.mode === "dark" ? 0.7 : 0.5),
+        }),
+        input: ({ theme }) => ({
+          color: theme.palette.text.primary,
+        }),
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+          "&.Mui-focused": {
+            color: theme.palette.primary.main,
+          },
+        }),
       },
     },
     MuiDataGrid: {
@@ -117,8 +212,8 @@ const commonThemeOptions: ThemeOptions = {
         showToolbar: true,
         initialState: {
           sorting: {
-            sortModel: [{ field: "created_at", sort: "asc"}]
-          }
+            sortModel: [{ field: "created_at", sort: "asc" }],
+          },
         },
         slots: {
           loadingOverlay: GridLoadingOverlay,
@@ -128,12 +223,12 @@ const commonThemeOptions: ThemeOptions = {
             variant: "linear-progress",
             noRowsVariant: "skeleton",
           },
-          columnsManagement: { 
+          columnsManagement: {
             getTogglableColumns: (columns: GridColDef[]) => {
               return columns
                 .map((column) => column.field)
-                .filter((column) => column !== "__detail__")
-            } 
+                .filter((column) => column !== "__detail__");
+            },
           },
         },
       },
@@ -142,37 +237,38 @@ const commonThemeOptions: ThemeOptions = {
           border: "none",
           fontSize: "0.7rem",
         },
-        columnHeader: {
-          backgroundColor: "#2a3443",
+        columnHeader: ({ theme }) => ({
+          backgroundColor: alpha(theme.palette.background.paper, theme.palette.mode === "dark" ? 0.85 : 1),
+          borderBottom: `1px solid ${alpha(theme.palette.divider, theme.palette.mode === "dark" ? 0.6 : 0.35)}`,
           "&:focus": {
             outline: "none",
           },
-        },
-        columnHeaderTitle: {
-          color: "#ffffff",
-        },
-        menuIconButton: {
-          color: "#ffffff",
-        },
-        sortIcon: {
-          color: "#ffffff",
-        },
-        columnSeparator: {
-          color: "#ffffff",
-        },
-        footerContainer: {
-          backgroundColor: "#2a3443",
+        }),
+        columnHeaderTitle: ({ theme }) => ({
+          color: theme.palette.text.primary,
+          fontWeight: 700,
+        }),
+        menuIconButton: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+        }),
+        sortIcon: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+        }),
+        columnSeparator: ({ theme }) => ({
+          color: alpha(theme.palette.divider, 0.8),
+        }),
+        footerContainer: ({ theme }) => ({
+          backgroundColor: alpha(theme.palette.background.paper, theme.palette.mode === "dark" ? 0.85 : 1),
+          borderTop: `1px solid ${alpha(theme.palette.divider, theme.palette.mode === "dark" ? 0.6 : 0.35)}`,
           height: "var(--DataGrid-headerHeight)",
           minHeight: "var(--DataGrid-headerHeight)",
-        },
-        selectedRowCount: {
-          color: "#ffffff",
-        },
-        virtualScrollerContent: ({ theme }) => {
-          return {
-            backgroundColor: theme.palette.background.paper,
-          };
-        },
+        }),
+        selectedRowCount: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+        }),
+        virtualScrollerContent: ({ theme }) => ({
+          backgroundColor: theme.palette.background.paper,
+        }),
         virtualScrollerRenderZone: {
           position: "relative",
         },
@@ -188,40 +284,41 @@ const commonThemeOptions: ThemeOptions = {
     },
     MuiTablePagination: {
       styleOverrides: {
-        root: {
-          fontSize: "0.7rem"
-        },
+        root: ({ theme }) => ({
+          fontSize: "0.7rem",
+          color: theme.palette.text.secondary,
+        }),
         toolbar: {
           height: "var(--DataGrid-headerHeight) !important",
           minHeight: "var(--DataGrid-headerHeight) !important",
           overflow: "hidden",
         },
-        selectLabel: {
-          color: "#ffffff",
-        },
-        select: {
-          color: "#ffffff",
-        },
-        selectIcon: {
-          color: "#ffffff",
-        },
-        displayedRows: {
-          color: "#ffffff",
-        },
-        actions: {
+        selectLabel: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+        }),
+        select: ({ theme }) => ({
+          color: theme.palette.text.primary,
+        }),
+        selectIcon: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+        }),
+        displayedRows: ({ theme }) => ({
+          color: theme.palette.text.secondary,
+        }),
+        actions: ({ theme }) => ({
           "& .MuiButtonBase-root": {
-            color: "#ffffff",
+            color: theme.palette.text.secondary,
           },
-        },
+        }),
       },
     },
     MuiInputBase: {
       styleOverrides: {
         root: {
           fontSize: "0.7rem !important",
-          height: "calc(var(--height) - 4px) !important"
-        }
-      }
+          height: "calc(var(--height) - 4px) !important",
+        },
+      },
     },
   },
 };
@@ -248,7 +345,13 @@ export const lightTheme = createTheme({
     error: {
       main: red.A400,
     },
-    divider: "#3a465a",
+    divider: grey[300],
+    action: {
+      hover: alpha("#000", 0.04),
+      selected: alpha("#000", 0.06),
+      focus: alpha("#2E7C8E", 0.16),
+      disabledBackground: alpha("#000", 0.04),
+    },
   },
 });
 
@@ -257,23 +360,29 @@ export const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#2E7C8E",
-      contrastText: "#FFFFFF",
+      main: "#4FB0C1",
+      contrastText: "#0B1218",
     },
     secondary: {
       main: "#152332",
     },
     background: {
-      default: "#101418",
-      paper: "#1B2128",
+      default: "#0E1216",
+      paper: "#151B22",
     },
     text: {
-      primary: "#F5F7FA",
-      secondary: "#4b596e",
+      primary: grey[50],
+      secondary: grey[300],
     },
     error: {
       main: red[300],
     },
-    divider: "#3a465a",
+    divider: alpha(grey[600], 0.7),
+    action: {
+      hover: alpha("#fff", 0.06),
+      selected: alpha("#4FB0C1", 0.18),
+      focus: alpha("#4FB0C1", 0.28),
+      disabledBackground: alpha("#fff", 0.08),
+    },
   },
 });

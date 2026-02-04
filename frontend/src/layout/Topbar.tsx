@@ -15,6 +15,7 @@ import {
   MenuItem,
   ListItemIcon,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SearchIcon from '@mui/icons-material/Search';
 import LightModeIcon from '@mui/icons-material/LightMode';
@@ -120,13 +121,13 @@ const Topbar: React.FC<{ topbarHeight: number }> = ({ topbarHeight }) => {
             }}
             sx={{
               '& .MuiOutlinedInput-root': {
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                backgroundColor: (theme) => alpha(theme.palette.common.white, 0.08),
                 borderRadius: 1,
                 '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  backgroundColor: (theme) => alpha(theme.palette.common.white, 0.12),
                 },
                 '& fieldset': {
-                  borderColor: 'rgba(255, 255, 255, 0.2)',
+                  borderColor: (theme) => alpha(theme.palette.common.white, 0.22),
                 },
               },
             }}
